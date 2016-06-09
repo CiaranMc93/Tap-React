@@ -4,6 +4,8 @@ import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
+import android.hardware.SensorListener;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
@@ -15,6 +17,7 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.junit.rules.Stopwatch;
@@ -25,7 +28,11 @@ import org.junit.rules.Stopwatch;
 public class GameLogic extends AppCompatActivity implements GestureDetector.OnDoubleTapListener, GestureDetector.OnGestureListener, SensorEventListener {
 
     //create gesture variable
-    GestureDetector mDetector;
+    GestureDetectorCompat mDetector;
+
+    //Textviews/EditTexts/Images
+    TextView time;
+
     //set up the global variables to manage framerate etc
     private final static int MAX_FPS = 50;
     //num frames to be skipped
@@ -65,6 +72,10 @@ public class GameLogic extends AppCompatActivity implements GestureDetector.OnDo
         // Vibrate for 500 milliseconds
         playMatch.vibrate(300);
 
+        //Textviews/EditTexts/Images
+        time = (TextView)findViewById(R.id.time);
+
+
         //get a random number between 0 and 3 and create a toast accordingly
         int randomNum = 0 + (int)(Math.random() * 3);
 
@@ -74,12 +85,10 @@ public class GameLogic extends AppCompatActivity implements GestureDetector.OnDo
         // Instantiate the gesture detector with the
         // application context and an implementation of
         // GestureDetector.OnGestureListener
-        mDetector = new GestureDetector(this, this);
+        mDetector = new GestureDetectorCompat(this, this);
         // Set the gesture detector as the double tap
         // listener.
         mDetector.setOnDoubleTapListener(this);
-
-
 
     }
 
@@ -104,17 +113,17 @@ public class GameLogic extends AppCompatActivity implements GestureDetector.OnDo
             //update global variables
             minutes = mins;
 
-            Log.d("Time", "Mins: " + minutes);
-
             customHandler.postDelayed(this, 0);
         }
 
     };
 
-    //run method that starts the game and updates everything in the game
-    public void run()
+    @Override
+    public boolean onTouchEvent(MotionEvent event)
     {
-
+        this.mDetector.onTouchEvent(event);
+        // Be sure to call the superclass implementation
+        return super.onTouchEvent(event);
     }
 
     @Override
@@ -167,8 +176,6 @@ public class GameLogic extends AppCompatActivity implements GestureDetector.OnDo
 
     @Override
     public void onLongPress(MotionEvent e) {
-
-        Log.d("E: " , "Long Tap " + e);
         //show to the user what they have done
         Toast.makeText(GameLogic.this, "Long Pressed", Toast.LENGTH_LONG).show();
 
@@ -176,9 +183,6 @@ public class GameLogic extends AppCompatActivity implements GestureDetector.OnDo
 
     @Override
     public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-
-        Log.d("E: " , "Swipe Tap " + e1 + " E2:" + e2);
-
         //make sure that the x-axis variable has a significant value
         //if a person moves their finger right the x-axis is updated and vice versa for y-axis
         if(velocityX > 100.000)
