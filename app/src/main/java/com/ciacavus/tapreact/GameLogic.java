@@ -22,6 +22,10 @@ import android.widget.Toast;
 
 import org.junit.rules.Stopwatch;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+
 /**
  * Created by ciaran on 08/06/2016.
  */
@@ -42,6 +46,9 @@ public class GameLogic extends AppCompatActivity implements GestureDetector.OnDo
     //string to hold the game options and let the user know
     public String[] gameOptions = {"twistIt","tapIt","turnIt"};
 
+    //handle all timer/runnable logic
+    ExecutorService threadPool = Executors.newSingleThreadExecutor();
+
     //main timer
     private long startTime = 0L;
     //handle the time
@@ -51,7 +58,9 @@ public class GameLogic extends AppCompatActivity implements GestureDetector.OnDo
     long timeSwapBuff = 0L;
     long updatedTime = 0L;
     int minutes;
-
+    int seconds;
+    //define a value to be used for the timing of the moves
+    int timerValue;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,7 +72,7 @@ public class GameLogic extends AppCompatActivity implements GestureDetector.OnDo
         //sourced from http://stackoverflow.com/questions/4195682/android-disable-screen-timeout-while-app-is-running
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
-        //start the timer and make play button invisible
+        //start the timer
         startTime = SystemClock.uptimeMillis();
         customHandler.postDelayed(updateTimerThread, 0);
 
@@ -74,7 +83,6 @@ public class GameLogic extends AppCompatActivity implements GestureDetector.OnDo
 
         //Textviews/EditTexts/Images
         time = (TextView)findViewById(R.id.time);
-
 
         //get a random number between 0 and 3 and create a toast accordingly
         int randomNum = 0 + (int)(Math.random() * 3);
@@ -110,13 +118,40 @@ public class GameLogic extends AppCompatActivity implements GestureDetector.OnDo
             int mins = secs / 60;
             secs = secs % 60;
 
+            //get milliseconds in readable format
+            timerValue = (int) updatedTime / 100;
+
             //update global variables
             minutes = mins;
+            seconds = secs;
+
+            //pass in the time in milliseconds to be used
+            if(timeExceeded(timerValue))
+            {
+                //stop calling the timer
+                customHandler.removeCallbacks(updateTimerThread);
+            }
 
             customHandler.postDelayed(this, 0);
         }
 
     };
+
+    //if the time has exceeded a set limit return true
+    public boolean timeExceeded(int milliSeconds)
+    {
+        //limit the timer in between each move
+        if(milliSeconds > 40)
+        {
+            time.setText("Game Over");
+            //end the thread/runnable
+            return true;
+        }
+
+        //print the time
+        time.setText("MilliSecs: " + milliSeconds);
+        return false;
+    }
 
     @Override
     public boolean onTouchEvent(MotionEvent event)
@@ -134,6 +169,8 @@ public class GameLogic extends AppCompatActivity implements GestureDetector.OnDo
         //show to the user what they have done
         Toast.makeText(GameLogic.this, "Single Tap", Toast.LENGTH_LONG).show();
 
+        resetRunnableTimer();
+
         return true;
     }
 
@@ -144,6 +181,8 @@ public class GameLogic extends AppCompatActivity implements GestureDetector.OnDo
 
         //show to the user what they have done
         Toast.makeText(GameLogic.this, "Double Tap", Toast.LENGTH_LONG).show();
+
+        resetRunnableTimer();
 
         return true;
     }
@@ -178,6 +217,7 @@ public class GameLogic extends AppCompatActivity implements GestureDetector.OnDo
     public void onLongPress(MotionEvent e) {
         //show to the user what they have done
         Toast.makeText(GameLogic.this, "Long Pressed", Toast.LENGTH_LONG).show();
+        resetRunnableTimer();
 
     }
 
@@ -189,12 +229,14 @@ public class GameLogic extends AppCompatActivity implements GestureDetector.OnDo
         {
             //show to the user what they have done
             Toast.makeText(GameLogic.this, "Swiped Right", Toast.LENGTH_LONG).show();
+            resetRunnableTimer();
         }
         //make sure that the x-axis variable has a significant value
         else if(velocityX < 100.000)
         {
             //show to the user what they have done
             Toast.makeText(GameLogic.this, "Swiped Left", Toast.LENGTH_LONG).show();
+            resetRunnableTimer();
         }
 
         return true;
@@ -208,6 +250,23 @@ public class GameLogic extends AppCompatActivity implements GestureDetector.OnDo
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
 
+    }
+
+    public void resetRunnableTimer()
+    {
+        //reset all the relevant values
+        timeInMilliseconds = 0L;
+        timeSwapBuff = 0L;
+        updatedTime = 0L;
+        minutes = 0;
+        seconds = 0;
+        startTime = 0;
+        startTime = SystemClock.uptimeMillis();
+        //define a value to be used for the timing of the moves
+        timerValue = 0;
+        //stop calling the timer then call a new one
+        customHandler.removeCallbacks(updateTimerThread);
+        customHandler.postDelayed(updateTimerThread,0);
     }
 
 }
