@@ -15,30 +15,32 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.WindowManager;
 import android.widget.TextView;
-import android.widget.Toast;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 /**
  * Created by ciaran on 08/06/2016.
  */
 public class GameLogic extends AppCompatActivity implements GestureDetector.OnDoubleTapListener, GestureDetector.OnGestureListener, SensorEventListener {
 
-    //create gesture variable
+    public static final int GAME_OVER_FLAG = 50;
+
+    //create gesture variable/physical activites
     GestureDetectorCompat mDetector;
+    Vibrator vibrate;
 
     //Textviews/EditTexts/Images
     TextView time;
     TextView status;
 
     //game logic
-    public String[] gameOptions = {"Double Tap","Single Tap","Long Press","Swipe Right","Swipe Left"};
-    boolean successHit = false;
-    boolean failHit = false;
+    public String[] gameOptions = {"Double Tap","Single Tap","Swipe Right","Swipe Left"};
     boolean timeUp = false;
     String getCurrentAction = "";
+    //start the difficulty to be updated after 30 seconds of play.
+    int difficulty = 30;
+    int timeAddition = 3;
+    boolean addedDifficultyFlag = false;
 
-    //main timer
+    //game timer
     private long startTime = 0L;
     //handle the time
     private Handler customHandler = new Handler();
@@ -46,8 +48,19 @@ public class GameLogic extends AppCompatActivity implements GestureDetector.OnDo
     long timeInMilliseconds = 0L;
     long timeSwapBuff = 0L;
     long updatedTime = 0L;
+
+    //main timer
+    private long overallStartTime = 0L;
+    //handle the time
+    private Handler overallHandler = new Handler();
+    //time logic
+    long overallTimeInMilliseconds = 0L;
+    long overallTimeSwapBuff = 0L;
+    long overallUpdatedTime = 0L;
     int minutes;
     int seconds;
+
+
     //define a value to be used for the timing of the moves
     int timerValue;
 
@@ -66,14 +79,17 @@ public class GameLogic extends AppCompatActivity implements GestureDetector.OnDo
         //sourced from http://stackoverflow.com/questions/4195682/android-disable-screen-timeout-while-app-is-running
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
-        //start the timer
+        //start the game timer
         startTime = SystemClock.uptimeMillis();
-        customHandler.postDelayed(updateTimerThread, 0);
+        customHandler.postDelayed(mainGameTimer, 0);
+        //start the overall main timer
+        overallStartTime = SystemClock.uptimeMillis();
+        overallHandler.postDelayed(overallTimer, 0);
 
         //vibration sourced from http://stackoverflow.com/questions/13950338/how-to-make-an-android-device-vibrate
-        Vibrator playMatch = (Vibrator) GameLogic.this.getSystemService(Context.VIBRATOR_SERVICE);
+        vibrate = (Vibrator) GameLogic.this.getSystemService(Context.VIBRATOR_SERVICE);
         // Vibrate for 500 milliseconds
-        playMatch.vibrate(300);
+        vibrate.vibrate(300);
 
         //Textviews/EditTexts/Images
         time = (TextView)findViewById(R.id.time);
@@ -94,7 +110,7 @@ public class GameLogic extends AppCompatActivity implements GestureDetector.OnDo
 
     //run the timer
     //runnable timer sourced from http://examples.javacodegeeks.com/android/core/os/handler/android-timer-example/
-    private Runnable updateTimerThread = new Runnable()
+    private Runnable mainGameTimer = new Runnable()
     {
         public void run()
         {
@@ -104,44 +120,46 @@ public class GameLogic extends AppCompatActivity implements GestureDetector.OnDo
             //calculate updated time
             updatedTime = timeSwapBuff + timeInMilliseconds;
 
-            //seconds is equal to updatedtime in milliseconds * 1000
-            int secs = (int) (updatedTime / 1000);
-            //to get mins then seconds * 60 is equal to mins
-            int mins = secs / 60;
-            secs = secs % 60;
-
             //get milliseconds in readable format
             timerValue = (int) updatedTime / 100;
 
-            //update the score each time
-            score = timerValue;
-
-            //update global variables
-            minutes = mins;
-            seconds = secs;
-
             //pass in the time in milliseconds to be used
-            timeExceeded(timerValue);
+            gameOver(timerValue);
 
             customHandler.postDelayed(this, 0);
         }
 
     };
 
-    //if the time has exceeded a set limit return true
-    public void timeExceeded(int milliSeconds)
+    //run the timer
+    //runnable timer sourced from http://examples.javacodegeeks.com/android/core/os/handler/android-timer-example/
+    private Runnable overallTimer = new Runnable()
     {
-        //limit the timer in between each move
-        if(milliSeconds > 20)
+        public void run()
         {
-            //game is over
-            gameOver();
-            timeUp = true;
+            //milliseconds calculation
+            overallTimeInMilliseconds = SystemClock.uptimeMillis() - overallStartTime;
+
+            //calculate updated time
+            overallUpdatedTime = overallTimeSwapBuff + overallTimeInMilliseconds;
+
+            //seconds is equal to updatedtime in milliseconds * 1000
+            int secs = (int) (overallUpdatedTime / 1000);
+            //to get mins then seconds * 60 is equal to mins
+            int mins = secs / 60;
+            secs = secs % 60;
+
+            //update the score each time
+            score = secs;
+
+            //update global variables
+            minutes = mins;
+            seconds = secs;
+
+            overallHandler.postDelayed(this, 0);
         }
 
-        //print the time
-        time.setText("MilliSecs: " + milliSeconds);
-    }
+    };
 
     @Override
     public boolean onTouchEvent(MotionEvent event)
@@ -157,8 +175,6 @@ public class GameLogic extends AppCompatActivity implements GestureDetector.OnDo
         String singleTap = "Single Tap";
         //update the game status
         updateGameStatus(singleTap);
-        //reset the timer to 0 if the hit was successful
-        resetRunnableTimer();
 
         return true;
     }
@@ -166,11 +182,9 @@ public class GameLogic extends AppCompatActivity implements GestureDetector.OnDo
     @Override
     public boolean onDoubleTap(MotionEvent e) {
 
-        String singleTap = "Double Tap";
+        String doubleTap = "Double Tap";
         //update the game status
-        updateGameStatus(singleTap);
-        //reset the timer to 0 if the hit was successful
-        resetRunnableTimer();
+        updateGameStatus(doubleTap);
 
         return true;
     }
@@ -204,34 +218,26 @@ public class GameLogic extends AppCompatActivity implements GestureDetector.OnDo
     @Override
     public void onLongPress(MotionEvent e) {
 
-        String singleTap = "Long Press";
-        //update the game status
-        updateGameStatus(singleTap);
-        //reset the timer to 0 if the hit was successful
-        resetRunnableTimer();
-
     }
 
     @Override
     public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+        String swipe = "";
+
         //make sure that the x-axis variable has a significant value
         //if a person moves their finger right the x-axis is updated and vice versa for y-axis
         if(velocityX > 100.000)
         {
-            String singleTap = "Swipe Right";
+            swipe = "Swipe Right";
             //update the game status
-            updateGameStatus(singleTap);
-            //reset the timer to 0 if the hit was successful
-            resetRunnableTimer();
+            updateGameStatus(swipe);
         }
         //make sure that the x-axis variable has a significant value
         else if(velocityX < 100.000)
         {
-            String singleTap = "Swipe Left";
+            swipe = "Swipe Left";
             //update the game status
-            updateGameStatus(singleTap);
-            //reset the timer to 0 if the hit was successful
-            resetRunnableTimer();
+            updateGameStatus(swipe);
         }
 
         return true;
@@ -250,44 +256,74 @@ public class GameLogic extends AppCompatActivity implements GestureDetector.OnDo
     //update the game status
     public void updateGameStatus(String userAction)
     {
-        //update a counter as this function is called but not on first time
-        if(counter != 0)
+        //avoid any logic if the game is over
+        if(!timeUp)
         {
-            counter++;
+            //update a counter as this function is called but not on first time
+            if(counter != 0)
+            {
+                counter++;
+            }
+
+            //if the user action is successful
+            if(userAction.contentEquals(getCurrentAction) || userAction.contentEquals("Start"))
+            {
+                //count the number of times the user was successful
+                counter++;
+                //respond to user success
+                vibrate.vibrate(100);
+                //reset the timer to 0 if the hit was successful
+                resetRunnableTimer();
+                //get a random number between 0 and 3 and create a toast accordingly
+                int randomNum = 0 + (int)(Math.random() * gameOptions.length);
+
+                //show to the user what they have to do
+                status.setText(gameOptions[randomNum]);
+
+                //set the action to the temp variable
+                getCurrentAction = gameOptions[randomNum];
+            }
+            else
+            {
+                //game over
+                gameOver(GAME_OVER_FLAG);
+            }
         }
-        else
-        {
-
-        }
-
-        //if the user action is successful
-        if(userAction.contentEquals(getCurrentAction))
-        {
-            counter++;
-        }
-        else
-        {
-            //else game over
-            gameOver();
-        }
-
-        //get a random number between 0 and 3 and create a toast accordingly
-        int randomNum = 0 + (int)(Math.random() * 5);
-
-        //show to the user what they have to do
-        status.setText(gameOptions[randomNum]);
-
-        //set the action to the temp variable
-        getCurrentAction = gameOptions[randomNum];
     }
 
-    public void gameOver()
+    public void gameOver(int milliSeconds)
     {
-        //stop calling the timer then call a new one
-        customHandler.removeCallbacks(updateTimerThread);
+        //increase the difficulty by adding a certain amount of milliseconds as the user lasts longer
+//        if(seconds > difficulty)
+//        {
+//            if(difficulty > 30)
+//            {
+//                milliSeconds += timeAddition;
+//            }
+//
+//            milliSeconds += timeAddition;
+//            //update the difficulty timer by 3 milliseconds
+//            difficulty += 30;
+//            timeAddition = timeAddition + 3;
+//        }
 
-        //set text to game over but replace with logic to update sql database and show user
-        time.setText("Game Over");
+        //limit the timer in between each move
+        if(milliSeconds > 20)
+        {
+            //set the time up to be true
+            timeUp = true;
+            //stop calling the timer then call a new one
+            customHandler.removeCallbacks(mainGameTimer);
+
+            //set text to game over but replace with logic to update sql database and show user
+            time.setText("Game Over");
+            status.setText("Final Score: " + score);
+        }
+        else
+        {
+            //print the time
+            time.setText("MilliSecs: " + milliSeconds);
+        }
     }
 
     public void resetRunnableTimer()
@@ -303,8 +339,8 @@ public class GameLogic extends AppCompatActivity implements GestureDetector.OnDo
         //define a value to be used for the timing of the moves
         timerValue = 0;
         //stop calling the timer then call a new one
-        customHandler.removeCallbacks(updateTimerThread);
-        customHandler.postDelayed(updateTimerThread,0);
+        customHandler.removeCallbacks(mainGameTimer);
+        customHandler.postDelayed(mainGameTimer,0);
     }
 
 }
