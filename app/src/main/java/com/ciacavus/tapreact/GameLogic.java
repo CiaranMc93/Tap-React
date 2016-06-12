@@ -1,9 +1,9 @@
 package com.ciacavus.tapreact;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
@@ -19,26 +19,35 @@ import android.widget.TextView;
 /**
  * Created by ciaran on 08/06/2016.
  */
-public class GameLogic extends AppCompatActivity implements GestureDetector.OnDoubleTapListener, GestureDetector.OnGestureListener, SensorEventListener {
+public class GameLogic extends AppCompatActivity implements GestureDetector.OnDoubleTapListener, GestureDetector.OnGestureListener{
 
     public static final int GAME_OVER_FLAG = 50;
+    private static int REACTION_TIME = 25;
 
     //create gesture variable/physical activites
     GestureDetectorCompat mDetector;
     Vibrator vibrate;
+    // The following are used for the shake detection
+    private SensorManager mSensorManager;
+    private Sensor mAccelerometer;
+    private ShakeDetector mShakeDetector;
+
+
+    //orientation flags
+    private boolean vertical = false;
+    private boolean horizontal = false;
 
     //Textviews/EditTexts/Images
     TextView time;
     TextView status;
 
     //game logic
-    public String[] gameOptions = {"Double Tap","Single Tap","Swipe Right","Swipe Left"};
+    //public String[] gameOptions = {"Double Tap","Single Tap","Swipe Right","Swipe Left", "Shake", "Switch to Horizontal", "Switch to Vertical"};
+    public String[] gameOptions = {"Double Tap","Single Tap","Swipe Right","Swipe Left", "Shake"};
     boolean timeUp = false;
     String getCurrentAction = "";
-    //start the difficulty to be updated after 30 seconds of play.
-    int difficulty = 30;
-    int timeAddition = 3;
-    boolean addedDifficultyFlag = false;
+    //start the difficulty to be updated after the successCounter reaches a certain amount
+    int difficulty;
 
     //game timer
     private long startTime = 0L;
@@ -60,20 +69,22 @@ public class GameLogic extends AppCompatActivity implements GestureDetector.OnDo
     int minutes;
     int seconds;
 
-
     //define a value to be used for the timing of the moves
     int timerValue;
 
     //score/stats/player info etc
-    int score = 0;
-    int ovrTime = 0;
-    int counter = 0;
+    int score;
+    int counter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.game_layout);
+        //reset all relative variables when the game is created
+        score = 0;
+        counter = 0;
+        difficulty = 0;
 
         //keep the screen on so the person can not be confused if their screen dims
         //sourced from http://stackoverflow.com/questions/4195682/android-disable-screen-timeout-while-app-is-running
@@ -91,6 +102,20 @@ public class GameLogic extends AppCompatActivity implements GestureDetector.OnDo
         // Vibrate for 500 milliseconds
         vibrate.vibrate(300);
 
+        // ShakeDetector initialization
+        mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        mShakeDetector = new ShakeDetector();
+        mShakeDetector.setOnShakeListener(new ShakeDetector.OnShakeListener() {
+
+            @Override
+            public void onShake(int count) {
+
+                //shake event
+                handleShakeEvent();
+            }
+        });
+
         //Textviews/EditTexts/Images
         time = (TextView)findViewById(R.id.time);
         status = (TextView)findViewById(R.id.gameStatus);
@@ -106,6 +131,20 @@ public class GameLogic extends AppCompatActivity implements GestureDetector.OnDo
         // listener.
         mDetector.setOnDoubleTapListener(this);
 
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        // Add the following line to register the Session Manager Listener onResume
+        mSensorManager.registerListener(mShakeDetector, mAccelerometer,	SensorManager.SENSOR_DELAY_UI);
+    }
+
+    @Override
+    public void onPause() {
+        // Add the following line to unregister the Sensor Manager onPause
+        mSensorManager.unregisterListener(mShakeDetector);
+        super.onPause();
     }
 
     //run the timer
@@ -150,7 +189,7 @@ public class GameLogic extends AppCompatActivity implements GestureDetector.OnDo
             secs = secs % 60;
 
             //update the score each time
-            score = secs;
+            score = (int) overallUpdatedTime / 100;
 
             //update global variables
             minutes = mins;
@@ -160,6 +199,13 @@ public class GameLogic extends AppCompatActivity implements GestureDetector.OnDo
         }
 
     };
+
+    public void handleShakeEvent()
+    {
+        String shake = "Shake";
+        //update the game status
+        updateGameStatus(shake);
+    }
 
     @Override
     public boolean onTouchEvent(MotionEvent event)
@@ -243,16 +289,6 @@ public class GameLogic extends AppCompatActivity implements GestureDetector.OnDo
         return true;
     }
 
-    @Override
-    public void onSensorChanged(SensorEvent event) {
-
-    }
-
-    @Override
-    public void onAccuracyChanged(Sensor sensor, int accuracy) {
-
-    }
-
     //update the game status
     public void updateGameStatus(String userAction)
     {
@@ -260,9 +296,25 @@ public class GameLogic extends AppCompatActivity implements GestureDetector.OnDo
         if(!timeUp)
         {
             //update a counter as this function is called but not on first time
+            //update the difficulty based on the hit counter
             if(counter != 0)
             {
                 counter++;
+            }
+            else if(counter == 10)
+            {
+                //update the reaction time to make it more difficult
+                REACTION_TIME  = REACTION_TIME - 5;
+            }
+            else if(counter == 20)
+            {
+                //update the reaction time to make it more difficult
+                REACTION_TIME  = REACTION_TIME - 10;
+            }
+            else if(counter == 30)
+            {
+                //update the reaction time to make it more difficult
+                REACTION_TIME  = REACTION_TIME - 15;
             }
 
             //if the user action is successful
@@ -276,6 +328,12 @@ public class GameLogic extends AppCompatActivity implements GestureDetector.OnDo
                 resetRunnableTimer();
                 //get a random number between 0 and 3 and create a toast accordingly
                 int randomNum = 0 + (int)(Math.random() * gameOptions.length);
+
+//                //check to make sure the orientation request cannot be made when it is in that opientation
+//                if(gameOptions[randomNum].contentEquals("Switch to Horizontal") && horizontal == true)
+//                {
+//
+//                }
 
                 //show to the user what they have to do
                 status.setText(gameOptions[randomNum]);
@@ -291,24 +349,36 @@ public class GameLogic extends AppCompatActivity implements GestureDetector.OnDo
         }
     }
 
+//    @Override
+//    public void onConfigurationChanged(Configuration newConfig)
+//    {
+//        super.onConfigurationChanged(newConfig);
+//
+//        String orientation = "";
+//
+//        // Checks the orientation of the screen
+//        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE)
+//        {
+//            orientation = "Switch to Horizontal";
+//            horizontal = true;
+//            //update the game status
+//            updateGameStatus(orientation);
+//        }
+//        else if(newConfig.orientation == Configuration.ORIENTATION_PORTRAIT)
+//        {
+//            orientation = "Switch to Vertical";
+//            vertical = true;
+//            //update the game status
+//            updateGameStatus(orientation);
+//        }
+//
+//    }
+
+    //game over logic
     public void gameOver(int milliSeconds)
     {
-        //increase the difficulty by adding a certain amount of milliseconds as the user lasts longer
-//        if(seconds > difficulty)
-//        {
-//            if(difficulty > 30)
-//            {
-//                milliSeconds += timeAddition;
-//            }
-//
-//            milliSeconds += timeAddition;
-//            //update the difficulty timer by 3 milliseconds
-//            difficulty += 30;
-//            timeAddition = timeAddition + 3;
-//        }
-
         //limit the timer in between each move
-        if(milliSeconds > 20)
+        if(milliSeconds > REACTION_TIME)
         {
             //set the time up to be true
             timeUp = true;
