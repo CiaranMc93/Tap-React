@@ -28,7 +28,7 @@ public class DBAdapter {
     private static final int DATABASE_VERSION = 1;
     private static final String TAG = "DBAdapter";
     private static final String DATABASE = "CREATE TABLE user_score (ID integer primary key AUTOINCREMENT, " +
-            "name varchar(255) not null, score integer not null, success_counter integer not null, minutes integer not null, seconds integer not null);";
+            "name varchar(255) not null, score integer not null, success_counter integer, minutes integer, seconds integer);";
 
     //database variables
     private Context context;
@@ -41,13 +41,12 @@ public class DBAdapter {
         DBHelper = new DatabaseHelper(context);
     }
 
-    //method to open the database
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+    //open the database
     public DBAdapter open() throws SQLException {
 
         try{
             //create or open the database before any logic is performed
-            db = SQLiteDatabase.openOrCreateDatabase("StudentDB", null);
+            db = SQLiteDatabase.openOrCreateDatabase("TapReact", null);
 
         }catch (SQLException e)
         {
@@ -77,20 +76,20 @@ public class DBAdapter {
     }
 
     //delete specific contact
-    public boolean deleteRow(long rowID)
+    public boolean deleteContact(long rowID)
     {
         return db.delete(DATABASE_TABLE, ID + "-" + rowID,null) > 0;
     }
 
     //retrieve all contacts
-    public Cursor getAllScores()
+    public Cursor getAllInfo()
     {
         //return a cursor query
         return db.query(DATABASE_TABLE, new String[] {ID, KEY_NAME, KEY_SCORE},null,null,null,null,null);
     }
 
     //get specific contact
-    public Cursor getUserScore(long rowId) throws SQLException{
+    public Cursor getInfo(long rowId) throws SQLException{
         Cursor mCursor = db.query(true, DATABASE_TABLE, new String[] {ID, KEY_NAME, KEY_SCORE}, ID + "=" + rowId,null,null,null,null,null);
 
         if(mCursor != null)
@@ -101,7 +100,7 @@ public class DBAdapter {
         return mCursor;
     }
 
-    public int updateUserScore(long rowId, String name, int score)
+    public int updateInfo(long rowId, String name, int score)
     {
         //create the arguement variable
         ContentValues args = new ContentValues();
@@ -140,7 +139,7 @@ public class DBAdapter {
 
             Log.w(TAG, "Upgrading database from version" + oldVersion
                     + " to " + newVersion + " will destroy all old data");
-            db.execSQL("DROP TABLE IF EXISTS user_score");
+            db.execSQL("DROP TABLE IF EXISTS students");
 
             onCreate(db);
         }

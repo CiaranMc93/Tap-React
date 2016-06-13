@@ -409,9 +409,8 @@ public class GameLogic extends AppCompatActivity implements GestureDetector.OnDo
     {
         //open the database and insert all relevant information into a new row
         //this allows user to keep track of their progress and best times/scores etc
-        db.open();
-
         try{
+            db.open();
             //insert new row
             db.insertInfo("Ciaran",score);
             //close the DB
