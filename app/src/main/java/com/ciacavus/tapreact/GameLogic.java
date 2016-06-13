@@ -2,6 +2,7 @@ package com.ciacavus.tapreact;
 
 import android.content.Context;
 import android.content.res.Configuration;
+import android.database.SQLException;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
 import android.os.Bundle;
@@ -31,6 +32,9 @@ public class GameLogic extends AppCompatActivity implements GestureDetector.OnDo
     private SensorManager mSensorManager;
     private Sensor mAccelerometer;
     private ShakeDetector mShakeDetector;
+
+    //handle the database logic
+    DBAdapter db;
 
 
     //orientation flags
@@ -85,17 +89,19 @@ public class GameLogic extends AppCompatActivity implements GestureDetector.OnDo
         score = 0;
         counter = 0;
         difficulty = 0;
-
-        //keep the screen on so the person can not be confused if their screen dims
-        //sourced from http://stackoverflow.com/questions/4195682/android-disable-screen-timeout-while-app-is-running
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-
         //start the game timer
         startTime = SystemClock.uptimeMillis();
         customHandler.postDelayed(mainGameTimer, 0);
         //start the overall main timer
         overallStartTime = SystemClock.uptimeMillis();
         overallHandler.postDelayed(overallTimer, 0);
+
+        //database instantiate
+        db = new DBAdapter(this);
+
+        //keep the screen on so the person can not be confused if their screen dims
+        //sourced from http://stackoverflow.com/questions/4195682/android-disable-screen-timeout-while-app-is-running
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         //vibration sourced from http://stackoverflow.com/questions/13950338/how-to-make-an-android-device-vibrate
         vibrate = (Vibrator) GameLogic.this.getSystemService(Context.VIBRATOR_SERVICE);
@@ -388,11 +394,33 @@ public class GameLogic extends AppCompatActivity implements GestureDetector.OnDo
             //set text to game over but replace with logic to update sql database and show user
             time.setText("Game Over");
             status.setText("Final Score: " + score);
+            //insert into database
+            insertIntoDatabase();
         }
         else
         {
             //print the time
             time.setText("MilliSecs: " + milliSeconds);
+        }
+    }
+
+    //insert into database the scores each time the game is run
+    public boolean insertIntoDatabase()
+    {
+        //open the database and insert all relevant information into a new row
+        //this allows user to keep track of their progress and best times/scores etc
+        db.open();
+
+        try{
+            //insert new row
+            db.insertInfo("Ciaran",score);
+            //close the DB
+            db.close();
+            return true;
+        }catch (SQLException e)
+        {
+            db.close();
+            return false;
         }
     }
 
