@@ -47,7 +47,8 @@ public class Highscores extends AppCompatActivity{
             if(c.moveToFirst())
             {
                 do{
-                    DisplayContacts(c);
+                    DisplayContacts(c,count);
+                    count++;
                 }
                 while(c.moveToNext());
 
@@ -62,20 +63,23 @@ public class Highscores extends AppCompatActivity{
     }
 
     //display the contacts in a toast from the cursor values
-    private void DisplayContacts(Cursor c)
+    private void DisplayContacts(Cursor c,int count)
     {
-        //set the layout params of the text view
-        ActionBar.LayoutParams lParams = new ActionBar.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        lParams.setMargins(0,50,0,0);
-        TextView highScores = new TextView(this);
-        //set the layout params of the text view
-        highScores.setLayoutParams(lParams);
-        highScores.setTextSize(20);
+        //make sure you can only display 10 scores
+        //less than or equal to nine means 0-9 which means 10 scores
+        if(count <= 9)
+        {
+            //set the layout params of the text view
+            ActionBar.LayoutParams lParams = new ActionBar.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            lParams.setMargins(0,50,0,0);
+            TextView highScores = new TextView(this);
+            //set the layout params of the text view
+            highScores.setLayoutParams(lParams);
 
-        //add the content
-        highScores.setText("Name: " + c.getString(1) + " " + "Score: " + c.getString(2));
-        //add the view to the layout
-        li.addView(highScores);
-
+            //add the content
+            highScores.setText("Name: " + c.getString(1) + " " + "Score: " + c.getString(2));
+            //add the view to the layout
+            li.addView(highScores);
+        }
     }
 }

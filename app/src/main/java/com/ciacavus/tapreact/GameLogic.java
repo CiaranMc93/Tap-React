@@ -1,20 +1,31 @@
 package com.ciacavus.tapreact;
 
+import android.annotation.TargetApi;
+import android.app.DialogFragment;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.res.Configuration;
 import android.database.SQLException;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
 import android.os.Vibrator;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.GestureDetectorCompat;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
+import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 /**
@@ -36,6 +47,11 @@ public class GameLogic extends AppCompatActivity implements GestureDetector.OnDo
     //handle the database logic
     DBAdapter db;
 
+    //layout logic
+    LinearLayout gameLayout;
+
+    //create an alert dialog box
+    DialogFragment userPromptBox;
 
     //orientation flags
     private boolean vertical = false;
@@ -95,6 +111,10 @@ public class GameLogic extends AppCompatActivity implements GestureDetector.OnDo
         //start the overall main timer
         overallStartTime = SystemClock.uptimeMillis();
         overallHandler.postDelayed(overallTimer, 0);
+        //create the alert dialog box and its pos/neg buttons
+        userPromptBox = new DialogBox();
+        //layout creation
+        gameLayout = (LinearLayout)findViewById(R.id.gameLayout);
 
         //database instantiate
         db = new DBAdapter(this);
@@ -396,6 +416,28 @@ public class GameLogic extends AppCompatActivity implements GestureDetector.OnDo
             status.setText("Final Score: " + score);
             //insert into database
             insertIntoDatabase();
+
+
+            //create a button to restart the game
+            ActionBar.LayoutParams lParams = new ActionBar.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            lParams.setMargins(0,50,0,0);
+            final Button restart = new Button(this);
+            //set the layout params of the text view
+            restart.setLayoutParams(lParams);
+            //add to the layout
+            gameLayout.addView(restart);
+
+
+            //when pressed, restart the game
+            restart.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //restart the game
+                    restartGame();
+                }
+            });
+
+
         }
         else
         {
@@ -405,12 +447,15 @@ public class GameLogic extends AppCompatActivity implements GestureDetector.OnDo
     }
 
     //insert into database the scores each time the game is run
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     public boolean insertIntoDatabase()
     {
         //open the database and insert all relevant information into a new row
         //this allows user to keep track of their progress and best times/scores etc
         try{
             db.open();
+            //show the dialog box
+            userPromptBox.show(getFragmentManager(),"User Score");
             //insert new row
             db.insertInfo("Ciaran",score);
             //close the DB
@@ -438,6 +483,22 @@ public class GameLogic extends AppCompatActivity implements GestureDetector.OnDo
         //stop calling the timer then call a new one
         customHandler.removeCallbacks(mainGameTimer);
         customHandler.postDelayed(mainGameTimer,0);
+    }
+
+    public void restartGame()
+    {
+        Log.d("Got here","Here now");
+        //reset all relative variables when the game is created
+        score = 0;
+        counter = 0;
+        difficulty = 0;
+        //start the game timer
+        startTime = SystemClock.uptimeMillis();
+        customHandler.postDelayed(mainGameTimer, 0);
+        //start the overall main timer
+        overallStartTime = SystemClock.uptimeMillis();
+        overallHandler.postDelayed(overallTimer, 0);
+        timeUp = false;
     }
 
 }
