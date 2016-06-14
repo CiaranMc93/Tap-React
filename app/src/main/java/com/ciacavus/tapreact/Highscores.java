@@ -3,7 +3,11 @@ package com.ciacavus.tapreact;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Gravity;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -15,6 +19,9 @@ public class Highscores extends AppCompatActivity{
     //create new DB variable
     DBAdapter db;
 
+    //get the layout of the screen
+    LinearLayout li;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -22,9 +29,11 @@ public class Highscores extends AppCompatActivity{
 
         setContentView(R.layout.highscore_layout);
 
+        //instantiate DBAdapter
         db = new DBAdapter(this);
 
-
+        //get the layout
+        li = (LinearLayout)findViewById(R.id.highscore);
 
         try{
             db.open();
@@ -55,8 +64,18 @@ public class Highscores extends AppCompatActivity{
     //display the contacts in a toast from the cursor values
     private void DisplayContacts(Cursor c)
     {
-        //add multiple text views to the layout to be shown
-        Toast.makeText(this,"id: " + c.getString(0) + "\n" + "Name: " + c.getString(1) + "Score: " + c.getString(2),Toast.LENGTH_LONG).show();
+        //set the layout params of the text view
+        ActionBar.LayoutParams lParams = new ActionBar.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        lParams.setMargins(0,50,0,0);
+        TextView highScores = new TextView(this);
+        //set the layout params of the text view
+        highScores.setLayoutParams(lParams);
+        highScores.setTextSize(20);
+
+        //add the content
+        highScores.setText("Name: " + c.getString(1) + " " + "Score: " + c.getString(2));
+        //add the view to the layout
+        li.addView(highScores);
 
     }
 }

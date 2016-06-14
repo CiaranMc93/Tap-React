@@ -85,7 +85,7 @@ public class DBAdapter {
     public Cursor getAllInfo()
     {
         //return a cursor query
-        return db.query(DATABASE_TABLE, new String[] {ID, KEY_NAME, KEY_SCORE},null,null,null,null,null);
+        return db.query(DATABASE_TABLE, new String[] {ID, KEY_NAME, KEY_SCORE},null,null,null,null,KEY_SCORE + " DESC");
     }
 
     //get specific contact
