@@ -140,6 +140,12 @@ public class GameLogic extends AppCompatActivity implements GestureDetector.OnDo
                 //shake event
                 handleShakeEvent();
             }
+
+            public void accelerometer(Boolean isTurned, Boolean isUpright) {
+
+                //shake event
+                handleShakeEvent();
+            }
         });
 
         //Textviews/EditTexts/Images
@@ -420,19 +426,20 @@ public class GameLogic extends AppCompatActivity implements GestureDetector.OnDo
 
             //create a button to restart the game
             ActionBar.LayoutParams lParams = new ActionBar.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            lParams.setMargins(0,50,0,0);
             final Button restart = new Button(this);
             //set the layout params of the text view
             restart.setLayoutParams(lParams);
+            restart.setText("Restart?");
             //add to the layout
             gameLayout.addView(restart);
-
 
             //when pressed, restart the game
             restart.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     //restart the game
+                    //remove the button so it is not added again
+                    gameLayout.removeView(restart);
                     restartGame();
                 }
             });
@@ -487,7 +494,6 @@ public class GameLogic extends AppCompatActivity implements GestureDetector.OnDo
 
     public void restartGame()
     {
-        Log.d("Got here","Here now");
         //reset all relative variables when the game is created
         score = 0;
         counter = 0;
@@ -499,6 +505,7 @@ public class GameLogic extends AppCompatActivity implements GestureDetector.OnDo
         overallStartTime = SystemClock.uptimeMillis();
         overallHandler.postDelayed(overallTimer, 0);
         timeUp = false;
+        updateGameStatus("Start");
     }
 
 }

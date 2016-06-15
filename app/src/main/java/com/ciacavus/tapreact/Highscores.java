@@ -71,11 +71,12 @@ public class Highscores extends AppCompatActivity{
         {
             //set the layout params of the text view
             ActionBar.LayoutParams lParams = new ActionBar.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            lParams.setMargins(0,50,0,0);
+            lParams.gravity = 0;
             TextView highScores = new TextView(this);
             //set the layout params of the text view
             highScores.setLayoutParams(lParams);
-
+            highScores.setPadding(5,10,0,10);
+            highScores.setTextSize(16);
             //add the content
             highScores.setText("Name: " + c.getString(1) + " " + "Score: " + c.getString(2));
             //add the view to the layout

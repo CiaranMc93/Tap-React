@@ -43,6 +43,26 @@ public class ShakeDetector implements SensorEventListener {
     @Override
     public void onSensorChanged(SensorEvent event) {
 
+        Sensor mAccelerometer = event.sensor;
+
+        if(mAccelerometer.getType() == Sensor.TYPE_ACCELEROMETER)
+        {
+            float x = event.values[0];
+            float y = event.values[1];
+            float z = event.values[2];
+
+            //check if the phone is upright or turned
+            //if the values are between 2 certain points, then the device is upright
+            if(x < y)
+            {
+                //upright
+            }
+            else if(y < x)
+            {
+                //turned
+            }
+        }
+
         //make sure the event is called
         if (mListener != null) {
             //get the values of the event
