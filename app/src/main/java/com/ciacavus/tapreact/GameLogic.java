@@ -62,8 +62,8 @@ public class GameLogic extends AppCompatActivity implements GestureDetector.OnDo
     TextView status;
 
     //game logic
-    //public String[] gameOptions = {"Double Tap","Single Tap","Swipe Right","Swipe Left", "Shake", "Switch to Horizontal", "Switch to Vertical"};
-    public String[] gameOptions = {"Double Tap","Single Tap","Swipe Right","Swipe Left", "Shake"};
+    public String[] gameOptions = {"Double Tap","Single Tap","Swipe Right","Swipe Left", "Shake", "Switch to Horizontal", "Switch to Vertical"};
+    //public String[] gameOptions = {"Double Tap","Single Tap","Swipe Right","Swipe Left", "Shake"};
     boolean timeUp = false;
     String getCurrentAction = "";
     //start the difficulty to be updated after the successCounter reaches a certain amount
@@ -140,12 +140,6 @@ public class GameLogic extends AppCompatActivity implements GestureDetector.OnDo
                 //shake event
                 handleShakeEvent();
             }
-
-            public void accelerometer(Boolean isTurned, Boolean isUpright) {
-
-                //shake event
-                handleShakeEvent();
-            }
         });
 
         //Textviews/EditTexts/Images
@@ -194,8 +188,11 @@ public class GameLogic extends AppCompatActivity implements GestureDetector.OnDo
             //get milliseconds in readable format
             timerValue = (int) updatedTime / 100;
 
-            //pass in the time in milliseconds to be used
-            gameOver(timerValue);
+            if(!timeUp)
+            {
+                //pass in the time in milliseconds to be used
+                gameOver(timerValue);
+            }
 
             customHandler.postDelayed(this, 0);
         }
@@ -361,6 +358,19 @@ public class GameLogic extends AppCompatActivity implements GestureDetector.OnDo
                 //get a random number between 0 and 3 and create a toast accordingly
                 int randomNum = 0 + (int)(Math.random() * gameOptions.length);
 
+                int orientation = this.getResources().getConfiguration().orientation;
+
+                Log.d("Got here","" + orientation);
+
+                if(orientation==Configuration.ORIENTATION_PORTRAIT)
+                {
+                    Log.d("Got here","");
+                }
+                else{
+                    Log.d("Got here","");
+                }
+
+
 //                //check to make sure the orientation request cannot be made when it is in that opientation
 //                if(gameOptions[randomNum].contentEquals("Switch to Horizontal") && horizontal == true)
 //                {
@@ -380,31 +390,6 @@ public class GameLogic extends AppCompatActivity implements GestureDetector.OnDo
             }
         }
     }
-
-//    @Override
-//    public void onConfigurationChanged(Configuration newConfig)
-//    {
-//        super.onConfigurationChanged(newConfig);
-//
-//        String orientation = "";
-//
-//        // Checks the orientation of the screen
-//        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE)
-//        {
-//            orientation = "Switch to Horizontal";
-//            horizontal = true;
-//            //update the game status
-//            updateGameStatus(orientation);
-//        }
-//        else if(newConfig.orientation == Configuration.ORIENTATION_PORTRAIT)
-//        {
-//            orientation = "Switch to Vertical";
-//            vertical = true;
-//            //update the game status
-//            updateGameStatus(orientation);
-//        }
-//
-//    }
 
     //game over logic
     public void gameOver(int milliSeconds)
@@ -461,8 +446,10 @@ public class GameLogic extends AppCompatActivity implements GestureDetector.OnDo
         //this allows user to keep track of their progress and best times/scores etc
         try{
             db.open();
+
             //show the dialog box
-            userPromptBox.show(getFragmentManager(),"User Score");
+            //userPromptBox.show(getFragmentManager(),"User Score");
+
             //insert new row
             db.insertInfo("Ciaran",score);
             //close the DB
@@ -506,6 +493,26 @@ public class GameLogic extends AppCompatActivity implements GestureDetector.OnDo
         overallHandler.postDelayed(overallTimer, 0);
         timeUp = false;
         updateGameStatus("Start");
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig)
+    {
+        super.onConfigurationChanged(newConfig);
+
+        String orientation;
+
+        if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT)
+        {
+            orientation = "Switch to Vertical";
+            //update the game status
+           //updateGameStatus(orientation);
+        } else if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE)
+        {
+            orientation = "Switch to Horizontal";
+            //update the game status
+            //updateGameStatus(orientation);
+        }
     }
 
 }

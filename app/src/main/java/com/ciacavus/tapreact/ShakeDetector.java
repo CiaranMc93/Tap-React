@@ -4,6 +4,8 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.util.Log;
+
 import static java.lang.Math.sqrt;
 
 /**
@@ -22,6 +24,9 @@ public class ShakeDetector implements SensorEventListener {
     private static final float SHAKE_THRESHOLD_GRAVITY = 2.7F;
     private static final int SHAKE_SLOP_TIME_MS = 500;
     private static final int SHAKE_COUNT_RESET_TIME_MS = 3000;
+
+    //get game logic variable to update the logic
+    GameLogic gameLogic = new GameLogic();
 
     private OnShakeListener mListener;
     private long mShakeTimestamp;
@@ -53,14 +58,7 @@ public class ShakeDetector implements SensorEventListener {
 
             //check if the phone is upright or turned
             //if the values are between 2 certain points, then the device is upright
-            if(x < y)
-            {
-                //upright
-            }
-            else if(y < x)
-            {
-                //turned
-            }
+
         }
 
         //make sure the event is called

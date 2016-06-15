@@ -19,18 +19,15 @@ public class DialogBox extends DialogFragment {
     {
         //construct dialog box
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        Log.d("Tag: ", "Instance: " + getActivity());
         builder.setMessage("Dialog Box").setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-
-                Log.d("Tag: ", "Positive: " + dialog);
 
             }
         }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                Log.d("Tag: ", "Negative: " + dialog);
+
             }
         });
 
