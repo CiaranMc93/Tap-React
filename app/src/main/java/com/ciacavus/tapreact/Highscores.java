@@ -75,7 +75,7 @@ public class Highscores extends AppCompatActivity{
             TextView highScores = new TextView(this);
             //set the layout params of the text view
             highScores.setLayoutParams(lParams);
-            highScores.setPadding(5,10,0,10);
+            highScores.setPadding(10,10,0,10);
             highScores.setTextSize(16);
             //add the content
             highScores.setText("Name: " + c.getString(1) + " " + "Score: " + c.getString(2));

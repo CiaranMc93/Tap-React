@@ -63,7 +63,9 @@ public class GameLogic extends AppCompatActivity implements GestureDetector.OnDo
 
     //game logic
     public String[] gameOptions = {"Double Tap","Single Tap","Swipe Right","Swipe Left", "Shake", "Switch to Horizontal", "Switch to Vertical"};
-    //public String[] gameOptions = {"Double Tap","Single Tap","Swipe Right","Swipe Left", "Shake"};
+    public String[] gameOptionsBackUp1 = {"Double Tap","Single Tap","Swipe Right","Swipe Left", "Shake","Switch to Horizontal"};
+    public String[] gameOptionsBackUp2 = {"Double Tap","Single Tap","Swipe Right","Swipe Left", "Shake","Switch to Vertical"};
+
     boolean timeUp = false;
     String getCurrentAction = "";
     //start the difficulty to be updated after the successCounter reaches a certain amount
@@ -287,7 +289,11 @@ public class GameLogic extends AppCompatActivity implements GestureDetector.OnDo
 
     @Override
     public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-        return false;
+
+        Log.d("Scroll: ", "X: " + distanceX);
+        Log.d("Scroll: ", "Y: " + distanceY);
+
+        return true;
     }
 
     @Override
@@ -358,24 +364,16 @@ public class GameLogic extends AppCompatActivity implements GestureDetector.OnDo
                 //get a random number between 0 and 3 and create a toast accordingly
                 int randomNum = 0 + (int)(Math.random() * gameOptions.length);
 
-                int orientation = this.getResources().getConfiguration().orientation;
-
-                Log.d("Got here","" + orientation);
-
-                if(orientation==Configuration.ORIENTATION_PORTRAIT)
+                if(vertical == true && horizontal == false && gameOptions[randomNum].contentEquals("Switch to Vertical"))
                 {
-                    Log.d("Got here","");
+                    //if it is upright already, avoid calling vertical
+                    randomNum = 0 + (int)(Math.random() * gameOptionsBackUp1.length);
                 }
-                else{
-                    Log.d("Got here","");
+                else if(vertical == false && horizontal == true && gameOptions[randomNum].contentEquals("Switch to Horizontal"))
+                {
+                    //if it is on its side already, avoid calling horizontal
+                    randomNum = 0 + (int)(Math.random() * gameOptionsBackUp2.length);
                 }
-
-
-//                //check to make sure the orientation request cannot be made when it is in that opientation
-//                if(gameOptions[randomNum].contentEquals("Switch to Horizontal") && horizontal == true)
-//                {
-//
-//                }
 
                 //show to the user what they have to do
                 status.setText(gameOptions[randomNum]);
@@ -407,7 +405,6 @@ public class GameLogic extends AppCompatActivity implements GestureDetector.OnDo
             status.setText("Final Score: " + score);
             //insert into database
             insertIntoDatabase();
-
 
             //create a button to restart the game
             ActionBar.LayoutParams lParams = new ActionBar.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -506,12 +503,16 @@ public class GameLogic extends AppCompatActivity implements GestureDetector.OnDo
         {
             orientation = "Switch to Vertical";
             //update the game status
-           //updateGameStatus(orientation);
+            vertical = true;
+            horizontal = false;
+            updateGameStatus(orientation);
         } else if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE)
         {
             orientation = "Switch to Horizontal";
             //update the game status
-            //updateGameStatus(orientation);
+            vertical = false;
+            horizontal = true;
+            updateGameStatus(orientation);
         }
     }
 
