@@ -9,6 +9,7 @@ import android.content.res.Configuration;
 import android.database.SQLException;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
+import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -45,6 +46,11 @@ public class GameLogic extends AppCompatActivity implements GestureDetector.OnDo
     private SensorManager mSensorManager;
     private Sensor mAccelerometer;
     private ShakeDetector mShakeDetector;
+
+    //media
+    MediaPlayer music;
+    MediaPlayer quickMusic;
+    boolean musicIsPlaying = false;
 
     //handle the database logic
     DBAdapter db;
@@ -126,6 +132,9 @@ public class GameLogic extends AppCompatActivity implements GestureDetector.OnDo
         //database instantiate
         db = new DBAdapter(this);
 
+        //play stopwatch start
+        mediaHandler("Start");
+
         //keep the screen on so the person can not be confused if their screen dims
         //sourced from http://stackoverflow.com/questions/4195682/android-disable-screen-timeout-while-app-is-running
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
@@ -195,6 +204,9 @@ public class GameLogic extends AppCompatActivity implements GestureDetector.OnDo
             //get milliseconds in readable format
             timerValue = (int) updatedTime / 100;
 
+            //update the music
+            mediaHandler("Update");
+
             if(!timeUp)
             {
                 //pass in the time in milliseconds to be used
@@ -235,6 +247,52 @@ public class GameLogic extends AppCompatActivity implements GestureDetector.OnDo
         }
 
     };
+
+    public void mediaHandler(String instruction)
+    {
+        //play the timer
+        if(REACTION_TIME - timerValue < 10 && instruction.contentEquals("update"))
+        {
+            //quick timer sound
+            quickMusic = MediaPlayer.create(getApplicationContext(),R.raw.stopwatch_running);
+            //start the quick music and stop the slow one.
+            if(!musicIsPlaying)
+            {
+                quickMusic.start();
+                musicIsPlaying = true;
+                if(music.isPlaying())
+                {
+                    music.stop();
+                }
+            }
+        }
+        else if(REACTION_TIME - timerValue > 10 && instruction.contentEquals("Update"))
+        {
+            //slow timer sound
+            music = MediaPlayer.create(getApplicationContext(),R.raw.electric_clock_ticking);
+            //start the slow music and stop the quick one.
+            if(!musicIsPlaying)
+            {
+                music.start();
+                musicIsPlaying = true;
+                try{
+                    if(quickMusic.isPlaying())
+                    {
+                        quickMusic.stop();
+                    }
+                }catch (Exception e)
+                {
+
+                }
+            }
+        }
+        else if(instruction.contentEquals("Start"))
+        {
+            //slow timer sound
+            music = MediaPlayer.create(getApplicationContext(),R.raw.stopwatch_start_click);
+            music.start();
+        }
+    }
 
     public void handleShakeEvent()
     {
