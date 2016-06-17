@@ -1,6 +1,7 @@
 package com.ciacavus.tapreact;
 
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.app.DialogFragment;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -23,6 +24,7 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -54,7 +56,7 @@ public class GameLogic extends AppCompatActivity implements GestureDetector.OnDo
     DialogFragment userPromptBox;
 
     //orientation flags
-    private boolean vertical = false;
+    private boolean vertical = true;
     private boolean horizontal = false;
 
     //Textviews/EditTexts/Images
@@ -102,6 +104,9 @@ public class GameLogic extends AppCompatActivity implements GestureDetector.OnDo
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        //hide the action bar from this activity
+        this.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.game_layout);
         //reset all relative variables when the game is created
         score = 0;

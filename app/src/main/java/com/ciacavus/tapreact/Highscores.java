@@ -1,5 +1,6 @@
 package com.ciacavus.tapreact;
 
+import android.app.Activity;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.os.Bundle;
@@ -7,6 +8,8 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Gravity;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -14,7 +17,7 @@ import android.widget.Toast;
 /**
  * Created by ciaran on 13/06/2016.
  */
-public class Highscores extends AppCompatActivity{
+public class Highscores extends AppCompatActivity {
 
     //create new DB variable
     DBAdapter db;
@@ -27,6 +30,9 @@ public class Highscores extends AppCompatActivity{
 
         super.onCreate(savedInstanceState);
 
+        //hide the action bar from this activity
+        this.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.highscore_layout);
 
         //instantiate DBAdapter

@@ -15,35 +15,49 @@
         android:layout_height="match_parent">
 
         <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/playgame"
-            android:id="@+id/playGame"
-            android:layout_marginTop="16dp"
-            android:layout_gravity="center_horizontal" />
+            android:id="@+id/playgame"
+            android:text="Play Game"
+            android:textColor="#E3F2FD"
+            android:textSize="25sp"
+            android:layout_width="250dp"
+            android:layout_height="55dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="35dp"
+            android:background="@drawable/buttonshape"/>
 
         <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/instructions"
             android:id="@+id/instructions"
-            android:layout_marginTop="16dp"
-            android:layout_gravity="center_horizontal" />
+            android:text="Instructions"
+            android:textColor="#E3F2FD"
+            android:textSize="25sp"
+            android:layout_width="250dp"
+            android:layout_height="55dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="35dp"
+            android:background="@drawable/buttonshape"/>
 
         <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/settings"
             android:id="@+id/settings"
-            android:layout_marginTop="16dp"
-            android:layout_gravity="center_horizontal" />
+            android:text="Settings"
+            android:textColor="#E3F2FD"
+            android:textSize="25sp"
+            android:layout_width="250dp"
+            android:layout_height="55dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="35dp"
+            android:background="@drawable/buttonshape"/>
 
         <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/highscores"
-            android:id="@+id/highScores"
-            android:layout_marginTop="16dp"
-            android:layout_gravity="center_horizontal" />
+            android:id="@+id/highscore"
+            android:text="Highscores"
+            android:textColor="#E3F2FD"
+            android:textSize="25sp"
+            android:layout_width="250dp"
+            android:layout_height="55dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="35dp"
+            android:background="@drawable/buttonshape"
+            />
+
     </LinearLayout>
 </LinearLayout>
