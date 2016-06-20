@@ -5,4 +5,6 @@
     <string name="credits">Credits</string>
     <string name="settings">Settings</string>
     <string name="instructions">Instructions</string>
+    <string name="difficulty">Difficulty</string>
+    <string name="color_change">Change Color Scheme</string>
 </resources>

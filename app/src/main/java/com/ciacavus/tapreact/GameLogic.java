@@ -48,9 +48,7 @@ public class GameLogic extends AppCompatActivity implements GestureDetector.OnDo
     private ShakeDetector mShakeDetector;
 
     //media
-    MediaPlayer music;
-    MediaPlayer quickMusic;
-    boolean musicIsPlaying = false;
+    //MediaPlayer music;
 
     //handle the database logic
     DBAdapter db;
@@ -132,8 +130,9 @@ public class GameLogic extends AppCompatActivity implements GestureDetector.OnDo
         //database instantiate
         db = new DBAdapter(this);
 
-        //play stopwatch start
-        mediaHandler("Start");
+        //slow timer sound
+//        music = MediaPlayer.create(getApplicationContext(),R.raw.electric_clock_ticking);
+//        mediaHandler();
 
         //keep the screen on so the person can not be confused if their screen dims
         //sourced from http://stackoverflow.com/questions/4195682/android-disable-screen-timeout-while-app-is-running
@@ -205,7 +204,7 @@ public class GameLogic extends AppCompatActivity implements GestureDetector.OnDo
             timerValue = (int) updatedTime / 100;
 
             //update the music
-            mediaHandler("Update");
+            //mediaHandler();
 
             if(!timeUp)
             {
@@ -248,51 +247,22 @@ public class GameLogic extends AppCompatActivity implements GestureDetector.OnDo
 
     };
 
-    public void mediaHandler(String instruction)
-    {
-        //play the timer
-        if(REACTION_TIME - timerValue < 10 && instruction.contentEquals("update"))
-        {
-            //quick timer sound
-            quickMusic = MediaPlayer.create(getApplicationContext(),R.raw.stopwatch_running);
-            //start the quick music and stop the slow one.
-            if(!musicIsPlaying)
-            {
-                quickMusic.start();
-                musicIsPlaying = true;
-                if(music.isPlaying())
-                {
-                    music.stop();
-                }
-            }
-        }
-        else if(REACTION_TIME - timerValue > 10 && instruction.contentEquals("Update"))
-        {
-            //slow timer sound
-            music = MediaPlayer.create(getApplicationContext(),R.raw.electric_clock_ticking);
-            //start the slow music and stop the quick one.
-            if(!musicIsPlaying)
-            {
-                music.start();
-                musicIsPlaying = true;
-                try{
-                    if(quickMusic.isPlaying())
-                    {
-                        quickMusic.stop();
-                    }
-                }catch (Exception e)
-                {
-
-                }
-            }
-        }
-        else if(instruction.contentEquals("Start"))
-        {
-            //slow timer sound
-            music = MediaPlayer.create(getApplicationContext(),R.raw.stopwatch_start_click);
-            music.start();
-        }
-    }
+//    public void mediaHandler()
+//    {
+//        //start the slow music and stop the quick one.
+//        try{
+//            if(music.isPlaying())
+//            {
+//            }
+//            else
+//            {
+//                music.start();
+//            }
+//        }catch (Exception e)
+//        {
+//
+//        }
+//    }
 
     public void handleShakeEvent()
     {
@@ -353,8 +323,8 @@ public class GameLogic extends AppCompatActivity implements GestureDetector.OnDo
     @Override
     public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
 
-        Log.d("Scroll: ", "X: " + distanceX);
-        Log.d("Scroll: ", "Y: " + distanceY);
+//        Log.d("Scroll: ", "X: " + distanceX);
+//        Log.d("Scroll: ", "Y: " + distanceY);
 
         return true;
     }
@@ -466,6 +436,9 @@ public class GameLogic extends AppCompatActivity implements GestureDetector.OnDo
             //set text to game over but replace with logic to update sql database and show user
             time.setText("Game Over");
             status.setText("Final Score: " + score);
+
+            //stop the music
+            //music.stop();
             //insert into database
             insertIntoDatabase();
 
@@ -553,6 +526,8 @@ public class GameLogic extends AppCompatActivity implements GestureDetector.OnDo
         overallHandler.postDelayed(overallTimer, 0);
         timeUp = false;
         updateGameStatus("Start");
+        //update the music
+        //mediaHandler();
     }
 
     @Override

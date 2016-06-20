@@ -1,11 +1,46 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="Option0" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorPrimary">@color/Option0Primary</item>
+        <item name="colorPrimaryDark">@color/Option0PrimaryDark</item>
+        <item name="colorAccent">@color/Option0PrimaryAccent</item>
+    </style>
+
+    <style name="Option1" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/Option1Primary</item>
+        <item name="colorPrimaryDark">@color/Option1Primary</item>
+        <item name="colorAccent">@color/Option1PrimaryAccent</item>
+    </style>
+
+    <style name="Option2" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/Option2Primary</item>
+        <item name="colorPrimaryDark">@color/Option2PrimaryDark</item>
+        <item name="colorAccent">@color/Option0PrimaryAccent</item>
+    </style>
+
+    <style name="Option3" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/Option3Primary</item>
+        <item name="colorPrimaryDark">@color/Option3PrimaryDark</item>
+        <item name="colorAccent">@color/Option3PrimaryAccent</item>
+    </style>
+
+    <style name="Option4" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/Option4Primary</item>
+        <item name="colorPrimaryDark">@color/Option4PrimaryDark</item>
+        <item name="colorAccent">@color/Option4PrimaryAccent</item>
+    </style>
+
+    <style name="Option5" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/Option5Primary</item>
+        <item name="colorPrimaryDark">@color/Option5PrimaryDark</item>
+        <item name="colorAccent">@color/Option5PrimaryAccent</item>
     </style>
 
 </resources>
