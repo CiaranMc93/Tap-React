@@ -37,7 +37,7 @@ import android.widget.TextView;
 public class GameLogic extends AppCompatActivity implements GestureDetector.OnDoubleTapListener, GestureDetector.OnGestureListener{
 
     public static final int GAME_OVER_FLAG = 50;
-    private static int REACTION_TIME = 25;
+    private static int REACTION_TIME = 15;
 
     //create gesture variable/physical activites
     GestureDetectorCompat mDetector;
@@ -104,6 +104,7 @@ public class GameLogic extends AppCompatActivity implements GestureDetector.OnDo
     int score;
     int counter;
 
+    @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

@@ -1,8 +1,10 @@
 package com.ciacavus.tapreact;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.database.Cursor;
 import android.database.SQLException;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -25,6 +27,7 @@ public class Highscores extends AppCompatActivity {
     //get the layout of the screen
     LinearLayout li;
 
+    @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 

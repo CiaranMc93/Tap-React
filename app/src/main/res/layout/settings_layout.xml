@@ -8,11 +8,20 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="@string/settings"
+            android:id="@+id/title"
+            android:layout_marginTop="30dp"
+            android:layout_gravity="center_horizontal" />
+
         <SeekBar
-            android:layout_width="match_parent"
+            android:layout_width="300dp"
             android:layout_height="wrap_content"
             android:id="@+id/changeColor"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="30dp"
             android:progress="1"
             android:max="5"
             android:layout_gravity="center_horizontal" />
@@ -25,12 +34,12 @@
             android:id="@+id/changeColorText" />
 
         <SeekBar
-            android:layout_width="match_parent"
+            android:layout_width="300dp"
             android:layout_height="wrap_content"
             android:id="@+id/difficulty"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="30dp"
             android:progress="1"
-            android:max="5"
+            android:max="3"
             android:layout_gravity="center_horizontal" />
 
         <TextView

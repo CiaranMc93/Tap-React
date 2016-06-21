@@ -93,5 +93,16 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        //set up a button listener
+        instructions.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //get the intent of the next application context
+                Intent i = new Intent(getApplicationContext(), Instructions.class);
+                //start the next activity which is defined in the intent
+                startActivity(i);
+            }
+        });
+
     }
 }
