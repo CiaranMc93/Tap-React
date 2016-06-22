@@ -60,6 +60,7 @@ public class GameSettings extends AppCompatActivity implements SeekBar.OnSeekBar
     @Override
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
 
+        //switch statement to determine which seekbar is pressed.
         switch(seekBar.getId())
         {
             case R.id.difficulty:

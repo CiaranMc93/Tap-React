@@ -67,7 +67,18 @@ public class Highscores extends AppCompatActivity {
             db.close();
         }catch (SQLException e)
         {
-
+            //set the layout params of the text view
+            ActionBar.LayoutParams lParams = new ActionBar.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            lParams.gravity = 0;
+            TextView noHighScores = new TextView(this);
+            //set the layout params of the text view
+            noHighScores.setLayoutParams(lParams);
+            noHighScores.setPadding(10,10,0,10);
+            noHighScores.setTextSize(16);
+            //add the content
+            noHighScores.setText("There are no highscores to highlight here.");
+            //add the view to the layout
+            li.addView(noHighScores);
         }
     }
 
@@ -87,7 +98,7 @@ public class Highscores extends AppCompatActivity {
             highScores.setPadding(10,10,0,10);
             highScores.setTextSize(16);
             //add the content
-            highScores.setText("Name: " + c.getString(1) + " " + "Score: " + c.getString(2));
+            highScores.setText("Name: " + c.getString(1) + " " + "Score: " + c.getString(2) + " " + "Success Counter: " + c.getString(3));
             //add the view to the layout
             li.addView(highScores);
         }

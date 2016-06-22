@@ -8,7 +8,7 @@ import android.view.WindowManager;
 /**
  * Created by ciaran on 21/06/2016.
  */
-public class Instructions extends AppCompatActivity {
+public class PersonalStats extends AppCompatActivity{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,4 +21,5 @@ public class Instructions extends AppCompatActivity {
         setContentView(R.layout.instructions_layout);
 
     }
+
 }

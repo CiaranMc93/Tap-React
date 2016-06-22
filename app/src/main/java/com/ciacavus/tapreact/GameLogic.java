@@ -37,7 +37,7 @@ import android.widget.TextView;
 public class GameLogic extends AppCompatActivity implements GestureDetector.OnDoubleTapListener, GestureDetector.OnGestureListener{
 
     public static final int GAME_OVER_FLAG = 50;
-    private static int REACTION_TIME = 15;
+    private static int REACTION_TIME = 25;
 
     //create gesture variable/physical activites
     GestureDetectorCompat mDetector;
@@ -324,9 +324,6 @@ public class GameLogic extends AppCompatActivity implements GestureDetector.OnDo
     @Override
     public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
 
-//        Log.d("Scroll: ", "X: " + distanceX);
-//        Log.d("Scroll: ", "Y: " + distanceY);
-
         return true;
     }
 
@@ -365,12 +362,7 @@ public class GameLogic extends AppCompatActivity implements GestureDetector.OnDo
         if(!timeUp)
         {
             //update a counter as this function is called but not on first time
-            //update the difficulty based on the hit counter
-            if(counter != 0)
-            {
-                counter++;
-            }
-            else if(counter == 10)
+            if(counter == 10)
             {
                 //update the reaction time to make it more difficult
                 REACTION_TIME  = REACTION_TIME - 5;
@@ -390,7 +382,11 @@ public class GameLogic extends AppCompatActivity implements GestureDetector.OnDo
             if(userAction.contentEquals(getCurrentAction) || userAction.contentEquals("Start"))
             {
                 //count the number of times the user was successful
-                counter++;
+                if(!userAction.contentEquals("Start"))
+                {
+                    counter++;
+                }
+
                 //respond to user success
                 vibrate.vibrate(100);
                 //reset the timer to 0 if the hit was successful
@@ -485,7 +481,7 @@ public class GameLogic extends AppCompatActivity implements GestureDetector.OnDo
             //userPromptBox.show(getFragmentManager(),"User Score");
 
             //insert new row
-            db.insertInfo("Ciaran",score);
+            db.insertInfo("Ciaran",score,counter);
             //close the DB
             db.close();
             return true;

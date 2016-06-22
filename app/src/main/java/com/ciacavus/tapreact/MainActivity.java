@@ -22,6 +22,7 @@ public class MainActivity extends AppCompatActivity {
     Button highScores;
     Button instructions;
     Button settings;
+    Button stats;
 
     //auto rotate flag
     boolean auto_rotate;
@@ -41,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
         highScores = (Button) findViewById(R.id.highscore);
         instructions = (Button) findViewById(R.id.instructions);
         settings = (Button) findViewById(R.id.settings);
+        stats = (Button) findViewById(R.id.personal);
 
         //set up a button listener
         playGame.setOnClickListener(new View.OnClickListener() {
@@ -86,10 +88,13 @@ public class MainActivity extends AppCompatActivity {
         settings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //warn the user
+                Toast.makeText(MainActivity.this,"Settings will be coming soon",Toast.LENGTH_LONG).show();
+                //DISABLE SETTINGS FOR THE FIRST VERSION GO LIVE
                 //get the intent of the next application context
-                Intent i = new Intent(getApplicationContext(), GameSettings.class);
+                //Intent i = new Intent(getApplicationContext(), GameSettings.class);
                 //start the next activity which is defined in the intent
-                startActivity(i);
+                //startActivity(i);
             }
         });
 
@@ -99,6 +104,17 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 //get the intent of the next application context
                 Intent i = new Intent(getApplicationContext(), Instructions.class);
+                //start the next activity which is defined in the intent
+                startActivity(i);
+            }
+        });
+
+        //set up a button listener
+        stats.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //get the intent of the next application context
+                Intent i = new Intent(getApplicationContext(), PersonalStats.class);
                 //start the next activity which is defined in the intent
                 startActivity(i);
             }

@@ -1,10 +1,11 @@
 <resources>
     <string name="app_name">TapReact</string>
-    <string name="highscores">High Scores</string>
+    <string name="highscores">Highscores</string>
     <string name="playgame">Play Game</string>
     <string name="credits">Credits</string>
     <string name="settings">Settings</string>
     <string name="instructions">Instructions</string>
     <string name="difficulty">Difficulty</string>
     <string name="color_change">Change Color Scheme</string>
+    <string name="personal_stats">Statistics</string>
 </resources>
