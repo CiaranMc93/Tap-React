@@ -1,12 +1,10 @@
 package com.ciacavus.tapreact;
 
 import android.annotation.TargetApi;
-import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.ButtonBarLayout;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -15,7 +13,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 /**
@@ -23,8 +20,13 @@ import android.widget.Toast;
  */
 public class PersonalStats extends AppCompatActivity{
 
+    //this information is defaulted
+    public static String username = "Ciacavus";
+    public static String password = "C11354741";
+
     //get the layout of the screen
     LinearLayout li;
+    DBAdapter db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,15 +38,29 @@ public class PersonalStats extends AppCompatActivity{
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.personal_stats);
 
+        db = new DBAdapter(this);
         li = (LinearLayout)findViewById(R.id.login);
 
-        //call the user login function
-        userLogin();
+        //initial login
+        //check the user login
+        db.open();
 
+        if(db.loginUser(username,password))
+        {
+            //toast the user
+            Toast.makeText(PersonalStats.this,"Welcome, " + username,Toast.LENGTH_SHORT).show();
+        }
+        else
+        {
+            //call the user login function
+            userRegister();
+        }
+
+        db.close();
     }
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-    public void userLogin()
+    public void userRegister()
     {
         //set the layout params of the views
         LinearLayout.LayoutParams lParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -58,6 +74,8 @@ public class PersonalStats extends AppCompatActivity{
         //set the layout params of the text view
         userLogin.setLayoutParams(lParams);
         password.setLayoutParams(lParams);
+        //set margins
+        lParams.setMargins(25,8,25,8);
         li2.setLayoutParams(lParams);
         relativeParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
         submit.setLayoutParams(relativeParams);

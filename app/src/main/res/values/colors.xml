@@ -18,4 +18,5 @@
     <color name="Option5Primary">#3F51B5</color>
     <color name="Option5PrimaryDark">#303F9F</color>
     <color name="Option5PrimaryAccent">#FF4081</color>
+    <color name="background">#668cff</color>
 </resources>

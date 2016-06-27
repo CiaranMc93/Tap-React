@@ -34,7 +34,7 @@ public class DBAdapter {
 
     //user holds information relating to the user as well as their stats
     private static final String USER = "CREATE TABLE users (name varchar(255) not null, password varchar(255) not null," +
-            "score integer not null, success_counter integer, minutes integer, seconds integer);";
+            "score integer, success_counter integer, minutes integer, seconds integer);";
 
     //database variables
     private Context context;
@@ -121,8 +121,7 @@ public class DBAdapter {
     {
         Cursor getUser;
 
-        getUser = db.rawQuery("SELECT * FROM " + USER_TABLE + " WHERE " + KEY_NAME + " =? " + " AND " + KEY_PASSWORD + " =? ",
-                new String[]{userName,password});
+        getUser = db.query(USER_TABLE, new String[] {KEY_NAME, KEY_PASSWORD},KEY_NAME + "=? " + " and " + KEY_PASSWORD + "=? ", new String[]{userName,password},null,null,null);
 
         //check if the cursor has a table row (select was successful)
         if(getUser.getCount() > 0)
@@ -148,10 +147,11 @@ public class DBAdapter {
 
             //try to execute the query
             try{
-                //execute SQL query
-                db.execSQL(GAME_DB);
                 //execute SQL query 2
                 db.execSQL(USER);
+                //execute SQL query
+                db.execSQL(GAME_DB);
+
             }catch (SQLException e)
             {
                 e.printStackTrace();

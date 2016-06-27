@@ -1,20 +1,17 @@
 package com.ciacavus.tapreact;
 
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.view.Gravity;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 /**
  * Created by ciaran on 13/06/2016.
@@ -56,7 +53,7 @@ public class Highscores extends AppCompatActivity {
             if(c.moveToFirst())
             {
                 do{
-                    DisplayContacts(c,count);
+                    displayHighscores(c,count);
                     count++;
                 }
                 while(c.moveToNext());
@@ -69,11 +66,10 @@ public class Highscores extends AppCompatActivity {
         {
             //set the layout params of the text view
             ActionBar.LayoutParams lParams = new ActionBar.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            lParams.gravity = 0;
+            lParams.setMargins(25,8,8,25);
             TextView noHighScores = new TextView(this);
             //set the layout params of the text view
             noHighScores.setLayoutParams(lParams);
-            noHighScores.setPadding(10,10,0,10);
             noHighScores.setTextSize(16);
             //add the content
             noHighScores.setText("There are no highscores to highlight here.");
@@ -83,7 +79,7 @@ public class Highscores extends AppCompatActivity {
     }
 
     //display the contacts in a toast from the cursor values
-    private void DisplayContacts(Cursor c,int count)
+    private void displayHighscores(Cursor c, int count)
     {
         //make sure you can only display 10 scores
         //less than or equal to nine means 0-9 which means 10 scores
@@ -91,7 +87,7 @@ public class Highscores extends AppCompatActivity {
         {
             //set the layout params of the text view
             ActionBar.LayoutParams lParams = new ActionBar.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            lParams.gravity = 0;
+            lParams.setMargins(25,8,8,25);
             TextView highScores = new TextView(this);
             //set the layout params of the text view
             highScores.setLayoutParams(lParams);
