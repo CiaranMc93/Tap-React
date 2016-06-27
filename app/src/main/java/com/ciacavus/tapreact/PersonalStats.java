@@ -1,6 +1,8 @@
 package com.ciacavus.tapreact;
 
+import android.annotation.TargetApi;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -14,6 +16,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 /**
  * Created by ciaran on 21/06/2016.
@@ -40,14 +43,15 @@ public class PersonalStats extends AppCompatActivity{
 
     }
 
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     public void userLogin()
     {
         //set the layout params of the views
         LinearLayout.LayoutParams lParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         RelativeLayout.LayoutParams relativeParams= new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         LinearLayout li2 = new LinearLayout(this);
-        EditText userLogin = new EditText(this);
-        EditText password = new EditText(this);
+        final EditText userLogin = new EditText(this);
+        final EditText password = new EditText(this);
         Button submit = new Button(this);
 
         li2.setOrientation(LinearLayout.VERTICAL);
@@ -68,9 +72,20 @@ public class PersonalStats extends AppCompatActivity{
         li2.addView(password);
         li2.addView(submit);
         //set color of layout
-        li2.setBackgroundColor(Color.parseColor("#FF4081"));
+        li2.setBackground(getResources().getDrawable(R.drawable.rounded_corners));
+
         //add login view to the linear layout
         li.addView(li2);
+
+        //initialise the button and get the text from the edit texts
+        submit.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v) {
+                String usr = userLogin.getText().toString();
+                String pwd = password.getText().toString();
+            }
+        });
     }
 
 }
