@@ -30,6 +30,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 /**
  * Created by ciaran on 08/06/2016.
@@ -38,6 +39,8 @@ public class GameLogic extends AppCompatActivity implements GestureDetector.OnDo
 
     public static final int GAME_OVER_FLAG = 50;
     private static int REACTION_TIME = 25;
+
+    PersonalStats personal;
 
     //create gesture variable/physical activites
     GestureDetectorCompat mDetector;
@@ -114,6 +117,7 @@ public class GameLogic extends AppCompatActivity implements GestureDetector.OnDo
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.game_layout);
         //reset all relative variables when the game is created
+        personal = new PersonalStats();
         score = 0;
         counter = 0;
         difficulty = 0;
@@ -477,11 +481,18 @@ public class GameLogic extends AppCompatActivity implements GestureDetector.OnDo
         try{
             db.open();
 
-            //show the dialog box
-            //userPromptBox.show(getFragmentManager(),"User Score");
-
             //insert new row
             db.insertInfo("Ciaran",score,counter);
+
+            //if the personal information is not just the default string
+            if(personal.username.contentEquals(" "))
+            {
+                Toast.makeText(GameLogic.this,"Noone is logged in",Toast.LENGTH_SHORT).show();
+            }
+            else
+            {
+                Toast.makeText(GameLogic.this,"Well Done!!, " + personal.username,Toast.LENGTH_SHORT).show();
+            }
             //close the DB
             db.close();
             return true;

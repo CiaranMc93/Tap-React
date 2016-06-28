@@ -8,4 +8,7 @@
     <string name="difficulty">Difficulty</string>
     <string name="color_change">Change Color Scheme</string>
     <string name="personal_stats">Statistics</string>
+    <string name="login">Login</string>
+    <string name="register">Register</string>
+    <string name="nonmember">Not a member?</string>
 </resources>

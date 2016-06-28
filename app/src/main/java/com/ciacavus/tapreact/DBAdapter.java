@@ -85,10 +85,18 @@ public class DBAdapter {
     }
 
     //retrieve all contacts
-    public Cursor getAllInfo()
+    public Cursor getAllInfo(String whichDB)
     {
-        //return a cursor query
-        return db.query(USER_SCORE, new String[]{ID, KEY_NAME, KEY_SCORE, KEY_COUNTER},null,null,null,null,KEY_SCORE + " DESC");
+        if(whichDB.contentEquals("Login"))
+        {
+            //return a cursor query
+            return db.query(USER_TABLE, new String[]{KEY_NAME, KEY_PASSWORD},null,null,null,null,null);
+        }
+        else
+        {
+            //return a cursor query
+            return db.query(USER_SCORE, new String[]{ID, KEY_NAME, KEY_SCORE, KEY_COUNTER},null,null,null,null,KEY_SCORE + " DESC");
+        }
     }
 
     //retrieve all contacts

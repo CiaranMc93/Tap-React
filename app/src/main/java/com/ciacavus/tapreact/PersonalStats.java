@@ -5,7 +5,6 @@ import android.database.Cursor;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -25,6 +24,10 @@ public class PersonalStats extends AppCompatActivity{
     public static String username;
     public static String password;
 
+    Button userLogin;
+    Button userRegister;
+    Button nonMember;
+
     //get the layout of the screen
     LinearLayout li;
     DBAdapter db;
@@ -41,39 +44,34 @@ public class PersonalStats extends AppCompatActivity{
 
         db = new DBAdapter(this);
         li = (LinearLayout)findViewById(R.id.login);
+        userLogin = (Button) findViewById(R.id.userlogin);
+        userRegister = (Button) findViewById(R.id.userreg);
+        nonMember = (Button) findViewById(R.id.nonmember);
+        //start off as invisible and with no resource attached
+        nonMember.setVisibility(View.INVISIBLE);
+        nonMember.setBackgroundResource(0);
 
-        //initial login
-        //check the user login
-        db.open();
+        //create the buttons onclick method
+        //set up a button listener
+        userLogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                userLogin.setVisibility(View.INVISIBLE);
+                userRegister.setVisibility(View.INVISIBLE);
+                //display redirect button
+                nonMember.setVisibility(View.VISIBLE);
+                userInput(true,true);
+            }
+        });
 
-        Cursor c = db.getFirstUser();
-
-        //perform a query and in a do while loop,
-        //run over each search result of the query
-        if(c.moveToFirst())
-        {
-            //get from database
-            getUserData(c);
-        }
-        else
-        {
-            //else default the login to a basic value
-            username = " ";
-            password = " ";
-        }
-
-        if(db.loginUser(username,password))
-        {
-            //toast the user
-            Toast.makeText(PersonalStats.this,"Welcome, " + username,Toast.LENGTH_SHORT).show();
-        }
-        else
-        {
-            //call the user login function
-            userRegister(true);
-        }
-
-        db.close();
+        userRegister.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                userLogin.setVisibility(View.INVISIBLE);
+                userRegister.setVisibility(View.INVISIBLE);
+                userInput(true,false);
+            }
+        });
     }
 
     public void getUserData(Cursor c)
@@ -84,7 +82,7 @@ public class PersonalStats extends AppCompatActivity{
     }
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-    public void userRegister(Boolean display)
+    public void userInput(Boolean display, final Boolean whichDisplay)
     {
         //check the flag
         if(display)
@@ -95,12 +93,23 @@ public class PersonalStats extends AppCompatActivity{
             LinearLayout li2 = new LinearLayout(this);
             final EditText userLogin = new EditText(this);
             final EditText password = new EditText(this);
-            Button submit = new Button(this);
 
             li2.setOrientation(LinearLayout.VERTICAL);
             //set the layout params of the text view
             userLogin.setLayoutParams(lParams);
             password.setLayoutParams(lParams);
+            //add confirm password edittext if it is register flag
+            if(!whichDisplay)
+            {
+                final EditText confirmPassword = new EditText(this);
+                confirmPassword.setLayoutParams(lParams);
+                confirmPassword.setHint("Confirm Password");
+                li2.addView(confirmPassword);
+            }
+
+            //create submit button
+            Button submit = new Button(this);
+
             //set margins
             lParams.setMargins(25,8,25,8);
             li2.setLayoutParams(lParams);
@@ -130,21 +139,57 @@ public class PersonalStats extends AppCompatActivity{
                     String usr = userLogin.getText().toString();
                     String pwd = password.getText().toString();
 
-                    //re-open the database
-                    db.open();
-
-                    //register the user
-                    if(db.registerUser(usr,pwd))
+                    if(!whichDisplay)
                     {
-                        Toast.makeText(PersonalStats.this,"Registered!",Toast.LENGTH_SHORT).show();
-                        db.close();
-                        userRegister(false);
+                        String confirmPwd = password.getText().toString();
+
+                        if(confirmPwd.contentEquals(pwd))
+                        {
+                            //re-open the database
+                            db.open();
+
+                            //register the user
+                            if(db.registerUser(usr,pwd))
+                            {
+                                Toast.makeText(PersonalStats.this,"Registered!",Toast.LENGTH_SHORT).show();
+                                db.close();
+
+                            }
+                            else
+                            {
+                                Toast.makeText(PersonalStats.this,"Unable to Register, Try Again!",Toast.LENGTH_SHORT).show();
+
+                                db.close();
+                            }
+                        }
+                        else
+                        {
+                            Toast.makeText(PersonalStats.this,"Passwords do not match",Toast.LENGTH_SHORT).show();
+                        }
                     }
                     else
                     {
-                        Toast.makeText(PersonalStats.this,"Unable to Register, Try Again!",Toast.LENGTH_SHORT).show();
-                        //recursive call if unsuccessful
-                        userRegister(true);
+                        //just log the user in
+                        db.open();
+                        //create an SQL cursor for the functionality of getting all the contacts
+                        Cursor c = db.getAllInfo("Login");
+
+                        //perform a query and in a do while loop,
+                        //run over each search result of the query
+                        if(c.moveToFirst())
+                        {
+                            do{
+                                //check if the username and password are in the database
+                                if(c.getString(0).toString().contentEquals(usr) && c.getString(1).toString().contentEquals(pwd))
+                                {
+                                    Toast.makeText(PersonalStats.this,"Logged In!",Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                            while(c.moveToNext());
+
+
+                        }
+
                         db.close();
                     }
                 }

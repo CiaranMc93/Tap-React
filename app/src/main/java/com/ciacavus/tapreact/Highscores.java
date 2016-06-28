@@ -44,7 +44,7 @@ public class Highscores extends AppCompatActivity {
         try{
             db.open();
             //create an SQL cursor for the functionality of getting all the contacts
-            Cursor c = db.getAllInfo();
+            Cursor c = db.getAllInfo("Highscores");
 
             int count = 0;
 
