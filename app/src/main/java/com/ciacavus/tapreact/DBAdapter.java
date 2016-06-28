@@ -88,7 +88,14 @@ public class DBAdapter {
     public Cursor getAllInfo()
     {
         //return a cursor query
-        return db.query(USER_SCORE, new String[] {ID, KEY_NAME, KEY_SCORE, KEY_COUNTER},null,null,null,null,KEY_SCORE + " DESC");
+        return db.query(USER_SCORE, new String[]{ID, KEY_NAME, KEY_SCORE, KEY_COUNTER},null,null,null,null,KEY_SCORE + " DESC");
+    }
+
+    //retrieve all contacts
+    public Cursor getFirstUser()
+    {
+        //return a cursor query
+        return db.query(USER_TABLE, new String[]{KEY_NAME, KEY_PASSWORD},null,null,null,null,null);
     }
 
     public int updateInfo(long rowId, String name, int score)
@@ -105,7 +112,7 @@ public class DBAdapter {
 
     }
 
-    public int registerUser(String userName,String password)
+    public boolean registerUser(String userName,String password)
     {
         ContentValues initial = new ContentValues();
 
@@ -114,7 +121,14 @@ public class DBAdapter {
         initial.put(KEY_PASSWORD,password);
 
         //insert into DB
-        return (int) db.insert(USER_TABLE,null,initial);
+        if(db.insert(USER_TABLE,null,initial) > 0)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 
     public boolean loginUser(String userName,String password)
