@@ -21,6 +21,9 @@ public class Highscores extends AppCompatActivity {
     //create new DB variable
     DBAdapter db;
 
+    //animation
+    Animate animate;
+
     //get the layout of the screen
     LinearLayout li;
 
@@ -37,6 +40,9 @@ public class Highscores extends AppCompatActivity {
 
         //instantiate DBAdapter
         db = new DBAdapter(this);
+
+        //animate
+        animate = new Animate(this);
 
         //get the layout
         li = (LinearLayout)findViewById(R.id.highscore);
@@ -88,6 +94,8 @@ public class Highscores extends AppCompatActivity {
             //set the layout params of the text view
             ActionBar.LayoutParams lParams = new ActionBar.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             lParams.setMargins(25,8,8,25);
+            LinearLayout li2 = new LinearLayout(this);
+            li2.setLayoutParams(lParams);
             TextView highScores = new TextView(this);
             //set the layout params of the text view
             highScores.setLayoutParams(lParams);
@@ -96,7 +104,9 @@ public class Highscores extends AppCompatActivity {
             //add the content
             highScores.setText("Name: " + c.getString(1) + " " + "Score: " + c.getString(2) + " " + "Success Counter: " + c.getString(3));
             //add the view to the layout
-            li.addView(highScores);
+            highScores.startAnimation(animate.animate("slideUp"));
+            li2.addView(highScores);
+            li.addView(li2);
         }
     }
 }

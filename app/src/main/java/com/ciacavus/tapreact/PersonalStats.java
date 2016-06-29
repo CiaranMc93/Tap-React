@@ -2,6 +2,7 @@ package com.ciacavus.tapreact;
 
 import android.annotation.TargetApi;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -10,10 +11,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 /**
@@ -27,6 +31,9 @@ public class PersonalStats extends AppCompatActivity{
 
     //username validator
     UsernameValidator usernameValidator;
+
+    //animation
+    Animate animate;
 
     Button userLogin;
     Button userRegister;
@@ -48,6 +55,8 @@ public class PersonalStats extends AppCompatActivity{
 
         db = new DBAdapter(this);
         usernameValidator = new UsernameValidator();
+        //create a new animation
+        animate = new Animate(this);
 
         li = (LinearLayout)findViewById(R.id.login);
         userLogin = (Button) findViewById(R.id.userlogin);
@@ -66,6 +75,7 @@ public class PersonalStats extends AppCompatActivity{
                 userRegister.setVisibility(View.INVISIBLE);
                 //display redirect button
                 nonMember.setVisibility(View.VISIBLE);
+                nonMember.startAnimation(animate.animate("slideIn"));
                 userInput(true,true);
             }
         });
@@ -115,6 +125,24 @@ public class PersonalStats extends AppCompatActivity{
             final EditText password = new EditText(this);
 
             li2.setOrientation(LinearLayout.VERTICAL);
+
+            if(!whichDisplay) {
+                TextView reg = new TextView(this);
+                reg.setLayoutParams(lParams);
+                reg.setText("Register");
+                reg.setTextSize(20);
+                reg.setTextColor(Color.BLACK);
+                li2.addView(reg);
+            }
+            else
+            {
+                TextView logString = new TextView(this);
+                logString.setLayoutParams(lParams);
+                logString.setText("Login");
+                logString.setTextSize(20);
+                logString.setTextColor(Color.BLACK);
+                li2.addView(logString);
+            }
             //set the layout params of the text view
             userLogin.setLayoutParams(lParams);
             password.setLayoutParams(lParams);
@@ -124,6 +152,7 @@ public class PersonalStats extends AppCompatActivity{
             //add the view to the layout
             li2.addView(userLogin);
             li2.addView(password);
+
             //add confirm password edittext if it is register flag
             if(!whichDisplay)
             {
@@ -148,6 +177,7 @@ public class PersonalStats extends AppCompatActivity{
             //set color of layout
             li2.setBackground(getResources().getDrawable(R.drawable.rounded_corners));
 
+            li2.startAnimation(animate.animate("slideIn"));
             //add login view to the linear layout
             li.addView(li2);
 
@@ -162,8 +192,6 @@ public class PersonalStats extends AppCompatActivity{
                     if(!whichDisplay)
                     {
                         String confirmPwd = password.getText().toString();
-
-                        Log.d("Null Value", "=" + confirmPwd + "=");
 
                         if(confirmPwd.contentEquals(pwd))
                         {

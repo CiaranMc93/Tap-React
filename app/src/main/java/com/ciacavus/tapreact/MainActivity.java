@@ -27,6 +27,9 @@ public class MainActivity extends AppCompatActivity {
     //auto rotate flag
     boolean auto_rotate;
 
+    //animation
+    Animate wobble;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,6 +38,9 @@ public class MainActivity extends AppCompatActivity {
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_main);
+
+        //animation
+        wobble = new Animate(this);
 
 
         //get all the buttons set out in the layout
@@ -48,6 +54,9 @@ public class MainActivity extends AppCompatActivity {
         playGame.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                //animate
+                playGame.startAnimation(wobble.animate("wobble"));
 
                 //check to see if the auto rotate functionality is on/has been disabled
                 if(android.provider.Settings.System.getInt(getContentResolver(), Settings.System.ACCELEROMETER_ROTATION,0) == 1){
@@ -77,6 +86,8 @@ public class MainActivity extends AppCompatActivity {
         highScores.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //animate
+                highScores.startAnimation(wobble.animate("wobble"));
                 //get the intent of the next application context
                 Intent i = new Intent(getApplicationContext(), Highscores.class);
                 //start the next activity which is defined in the intent
@@ -88,6 +99,8 @@ public class MainActivity extends AppCompatActivity {
         settings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //animate
+                settings.startAnimation(wobble.animate("wobble"));
                 //warn the user
                 Toast.makeText(MainActivity.this,"Settings will be coming soon",Toast.LENGTH_LONG).show();
                 //DISABLE SETTINGS FOR THE FIRST VERSION GO LIVE
@@ -102,6 +115,8 @@ public class MainActivity extends AppCompatActivity {
         instructions.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //animate
+                instructions.startAnimation(wobble.animate("wobble"));
                 //get the intent of the next application context
                 Intent i = new Intent(getApplicationContext(), Instructions.class);
                 //start the next activity which is defined in the intent
@@ -113,6 +128,8 @@ public class MainActivity extends AppCompatActivity {
         stats.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //animate
+                stats.startAnimation(wobble.animate("wobble"));
                 //get the intent of the next application context
                 Intent i = new Intent(getApplicationContext(), PersonalStats.class);
                 //start the next activity which is defined in the intent
