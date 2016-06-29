@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -23,6 +24,9 @@ public class PersonalStats extends AppCompatActivity{
     //this information is defaulted
     public static String username;
     public static String password;
+
+    //username validator
+    UsernameValidator usernameValidator;
 
     Button userLogin;
     Button userRegister;
@@ -43,6 +47,8 @@ public class PersonalStats extends AppCompatActivity{
         setContentView(R.layout.personal_stats);
 
         db = new DBAdapter(this);
+        usernameValidator = new UsernameValidator();
+
         li = (LinearLayout)findViewById(R.id.login);
         userLogin = (Button) findViewById(R.id.userlogin);
         userRegister = (Button) findViewById(R.id.userreg);
@@ -72,6 +78,16 @@ public class PersonalStats extends AppCompatActivity{
                 userInput(true,false);
             }
         });
+
+        nonMember.setOnClickListener(new View.OnClickListener()
+        {
+
+            @Override
+            public void onClick(View v) {
+                userInput(true,false);
+                li.removeView(nonMember);
+            }
+        });
     }
 
     public void getUserData(Cursor c)
@@ -84,6 +100,10 @@ public class PersonalStats extends AppCompatActivity{
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     public void userInput(Boolean display, final Boolean whichDisplay)
     {
+        //refresh the layout
+        li.removeAllViews();
+        li.addView(nonMember);
+
         //check the flag
         if(display)
         {
@@ -98,6 +118,12 @@ public class PersonalStats extends AppCompatActivity{
             //set the layout params of the text view
             userLogin.setLayoutParams(lParams);
             password.setLayoutParams(lParams);
+
+            userLogin.setHint("User Name");
+            password.setHint("Password");
+            //add the view to the layout
+            li2.addView(userLogin);
+            li2.addView(password);
             //add confirm password edittext if it is register flag
             if(!whichDisplay)
             {
@@ -118,12 +144,6 @@ public class PersonalStats extends AppCompatActivity{
 
             //fill in the views
             submit.setText("Login");
-            userLogin.setHint("User Name");
-            password.setHint("Password");
-
-            //add the view to the layout
-            li2.addView(userLogin);
-            li2.addView(password);
             li2.addView(submit);
             //set color of layout
             li2.setBackground(getResources().getDrawable(R.drawable.rounded_corners));
@@ -143,17 +163,18 @@ public class PersonalStats extends AppCompatActivity{
                     {
                         String confirmPwd = password.getText().toString();
 
+                        Log.d("Null Value", "=" + confirmPwd + "=");
+
                         if(confirmPwd.contentEquals(pwd))
                         {
                             //re-open the database
                             db.open();
 
                             //register the user
-                            if(db.registerUser(usr,pwd))
+                            if(db.registerUser(usr,pwd) && usernameValidator.validate(usr))
                             {
                                 Toast.makeText(PersonalStats.this,"Registered!",Toast.LENGTH_SHORT).show();
                                 db.close();
-
                             }
                             else
                             {
