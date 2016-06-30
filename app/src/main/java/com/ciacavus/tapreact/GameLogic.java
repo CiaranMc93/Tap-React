@@ -438,8 +438,16 @@ public class GameLogic extends AppCompatActivity implements GestureDetector.OnDo
             final Button restart = new Button(this);
             //set the layout params of the text view
             restart.setLayoutParams(lParams);
-            restart.setText("Restart?");
+            restart.setBackgroundResource(R.mipmap.ic_replay_black_24dp);
             //add to the layout
+            TextView noHighScores = new TextView(this);
+            //set the layout params of the text view
+            noHighScores.setLayoutParams(lParams);
+            noHighScores.setTextSize(16);
+            //add the content
+            noHighScores.setText("Got here");
+            //add the view to the layout
+            relativeLayout.addView(noHighScores);
             relativeLayout.addView(restart);
 
             //when pressed, restart the game

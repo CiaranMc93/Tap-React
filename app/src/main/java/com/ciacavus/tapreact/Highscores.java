@@ -48,7 +48,6 @@ public class Highscores extends AppCompatActivity {
 
         //get the layout
         li = (LinearLayout)findViewById(R.id.highscore);
-        li2 = new LinearLayout(this);
 
         try{
             db.open();
@@ -98,23 +97,18 @@ public class Highscores extends AppCompatActivity {
             //set the layout params of the text view
             ActionBar.LayoutParams lParams = new ActionBar.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             lParams.setMargins(25,8,8,25);
+            li2 = new LinearLayout(this);
             li2.setLayoutParams(lParams);
             TextView highScores = new TextView(this);
             //set the layout params of the text view
             highScores.setLayoutParams(lParams);
-            highScores.setPadding(10,10,0,10);
             highScores.setTextSize(16);
             //add the content
-            highScores.setText("Name: " + c.getString(1) + " " + "Score: " + c.getString(2) + " " + "Success Counter: " + c.getString(3));
+            highScores.setText("No." + count + "Name: " + c.getString(1) + " " + "Score: " + c.getString(2) + " " + "Success Counter: " + c.getString(3));
             //add the view to the layout
             highScores.startAnimation(animate.animate("slideUp"));
             li2.addView(highScores);
-
-            if(c.isLast())
-            {
-                li2.setBackground(getResources().getDrawable(R.drawable.rounded_corners));
-                li.addView(li2);
-            }
+            li.addView(li2);
         }
     }
 }
