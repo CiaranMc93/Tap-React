@@ -3,6 +3,7 @@ package com.ciacavus.tapreact;
 import android.annotation.TargetApi;
 import android.database.Cursor;
 import android.database.SQLException;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
@@ -26,6 +27,7 @@ public class Highscores extends AppCompatActivity {
 
     //get the layout of the screen
     LinearLayout li;
+    LinearLayout li2;
 
     @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
     @Override
@@ -46,6 +48,7 @@ public class Highscores extends AppCompatActivity {
 
         //get the layout
         li = (LinearLayout)findViewById(R.id.highscore);
+        li2 = new LinearLayout(this);
 
         try{
             db.open();
@@ -85,6 +88,7 @@ public class Highscores extends AppCompatActivity {
     }
 
     //display the contacts in a toast from the cursor values
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     private void displayHighscores(Cursor c, int count)
     {
         //make sure you can only display 10 scores
@@ -94,7 +98,6 @@ public class Highscores extends AppCompatActivity {
             //set the layout params of the text view
             ActionBar.LayoutParams lParams = new ActionBar.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             lParams.setMargins(25,8,8,25);
-            LinearLayout li2 = new LinearLayout(this);
             li2.setLayoutParams(lParams);
             TextView highScores = new TextView(this);
             //set the layout params of the text view
@@ -106,7 +109,12 @@ public class Highscores extends AppCompatActivity {
             //add the view to the layout
             highScores.startAnimation(animate.animate("slideUp"));
             li2.addView(highScores);
-            li.addView(li2);
+
+            if(c.isLast())
+            {
+                li2.setBackground(getResources().getDrawable(R.drawable.rounded_corners));
+                li.addView(li2);
+            }
         }
     }
 }

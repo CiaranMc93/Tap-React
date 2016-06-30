@@ -29,6 +29,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -40,7 +41,7 @@ public class GameLogic extends AppCompatActivity implements GestureDetector.OnDo
     public static final int GAME_OVER_FLAG = 50;
     private static int REACTION_TIME = 25;
 
-    PersonalStats personal;
+    //PersonalStats personal;
 
     //create gesture variable/physical activites
     GestureDetectorCompat mDetector;
@@ -58,6 +59,7 @@ public class GameLogic extends AppCompatActivity implements GestureDetector.OnDo
 
     //layout logic
     LinearLayout gameLayout;
+    RelativeLayout relativeLayout;
 
     //create an alert dialog box
     DialogFragment userPromptBox;
@@ -71,9 +73,7 @@ public class GameLogic extends AppCompatActivity implements GestureDetector.OnDo
     TextView status;
 
     //game logic
-    public String[] gameOptions = {"Double Tap","Single Tap","Swipe Right","Swipe Left", "Shake", "Switch to Horizontal", "Switch to Vertical"};
-    public String[] gameOptionsBackUp1 = {"Double Tap","Single Tap","Swipe Right","Swipe Left", "Shake","Switch to Horizontal"};
-    public String[] gameOptionsBackUp2 = {"Double Tap","Single Tap","Swipe Right","Swipe Left", "Shake","Switch to Vertical"};
+    public String[] gameOptions = {"Double Tap","Single Tap","Swipe Right","Swipe Left", "Shake", "Turn it"};
 
     boolean timeUp = false;
     String getCurrentAction = "";
@@ -117,7 +117,8 @@ public class GameLogic extends AppCompatActivity implements GestureDetector.OnDo
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.game_layout);
         //reset all relative variables when the game is created
-        personal = new PersonalStats();
+        //personal = new PersonalStats();
+        relativeLayout = new RelativeLayout(this);
         score = 0;
         counter = 0;
         difficulty = 0;
@@ -398,17 +399,6 @@ public class GameLogic extends AppCompatActivity implements GestureDetector.OnDo
                 //get a random number between 0 and 3 and create a toast accordingly
                 int randomNum = 0 + (int)(Math.random() * gameOptions.length);
 
-                if(vertical == true && horizontal == false && gameOptions[randomNum].contentEquals("Switch to Vertical"))
-                {
-                    //if it is upright already, avoid calling vertical
-                    randomNum = 0 + (int)(Math.random() * gameOptionsBackUp1.length);
-                }
-                else if(vertical == false && horizontal == true && gameOptions[randomNum].contentEquals("Switch to Horizontal"))
-                {
-                    //if it is on its side already, avoid calling horizontal
-                    randomNum = 0 + (int)(Math.random() * gameOptionsBackUp2.length);
-                }
-
                 //show to the user what they have to do
                 status.setText(gameOptions[randomNum]);
 
@@ -444,13 +434,13 @@ public class GameLogic extends AppCompatActivity implements GestureDetector.OnDo
             insertIntoDatabase();
 
             //create a button to restart the game
-            ActionBar.LayoutParams lParams = new ActionBar.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            ActionBar.LayoutParams lParams = new ActionBar.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             final Button restart = new Button(this);
             //set the layout params of the text view
             restart.setLayoutParams(lParams);
             restart.setText("Restart?");
             //add to the layout
-            gameLayout.addView(restart);
+            relativeLayout.addView(restart);
 
             //when pressed, restart the game
             restart.setOnClickListener(new View.OnClickListener() {
@@ -458,7 +448,7 @@ public class GameLogic extends AppCompatActivity implements GestureDetector.OnDo
                 public void onClick(View v) {
                     //restart the game
                     //remove the button so it is not added again
-                    gameLayout.removeView(restart);
+                    relativeLayout.removeView(restart);
                     restartGame();
                 }
             });
@@ -485,14 +475,14 @@ public class GameLogic extends AppCompatActivity implements GestureDetector.OnDo
             db.insertInfo("Ciaran",score,counter);
 
             //if the personal information is not just the default string
-            if(personal.username.contentEquals(" "))
-            {
-                Toast.makeText(GameLogic.this,"Noone is logged in",Toast.LENGTH_SHORT).show();
-            }
-            else
-            {
-                Toast.makeText(GameLogic.this,"Well Done!!, " + personal.username,Toast.LENGTH_SHORT).show();
-            }
+//            if(personal.username.contentEquals(" "))
+//            {
+//                Toast.makeText(GameLogic.this,"Noone is logged in",Toast.LENGTH_SHORT).show();
+//            }
+//            else
+//            {
+//                Toast.makeText(GameLogic.this,"Well Done!!, " + personal.username,Toast.LENGTH_SHORT).show();
+//            }
             //close the DB
             db.close();
             return true;
@@ -547,17 +537,13 @@ public class GameLogic extends AppCompatActivity implements GestureDetector.OnDo
 
         if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT)
         {
-            orientation = "Switch to Vertical";
+            orientation = "Turn it";
             //update the game status
-            vertical = true;
-            horizontal = false;
             updateGameStatus(orientation);
         } else if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE)
         {
-            orientation = "Switch to Horizontal";
+            orientation = "Turn it";
             //update the game status
-            vertical = false;
-            horizontal = true;
             updateGameStatus(orientation);
         }
     }
