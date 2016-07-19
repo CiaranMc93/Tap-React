@@ -43,6 +43,9 @@ public class GameLogic extends AppCompatActivity implements GestureDetector.OnDo
 
     //PersonalStats personal;
 
+    //animation
+    Animate shake;
+
     //create gesture variable/physical activites
     GestureDetectorCompat mDetector;
     Vibrator vibrate;
@@ -118,6 +121,7 @@ public class GameLogic extends AppCompatActivity implements GestureDetector.OnDo
         setContentView(R.layout.game_layout);
         //reset all relative variables when the game is created
         //personal = new PersonalStats();
+        shake = new Animate(this);
         relativeLayout = new RelativeLayout(this);
         score = 0;
         counter = 0;
@@ -272,9 +276,9 @@ public class GameLogic extends AppCompatActivity implements GestureDetector.OnDo
 
     public void handleShakeEvent()
     {
-        String shake = "Shake";
+        String shakeStr = "Shake";
         //update the game status
-        updateGameStatus(shake);
+        updateGameStatus(shakeStr);
     }
 
     @Override
@@ -361,6 +365,7 @@ public class GameLogic extends AppCompatActivity implements GestureDetector.OnDo
     }
 
     //update the game status
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     public void updateGameStatus(String userAction)
     {
         //avoid any logic if the game is over
@@ -401,6 +406,15 @@ public class GameLogic extends AppCompatActivity implements GestureDetector.OnDo
 
                 //show to the user what they have to do
                 status.setText(gameOptions[randomNum]);
+                status.setTextSize(30);
+                status.setBackground(getResources().getDrawable(R.drawable.buttonshape));
+
+                switch (gameOptions[randomNum])
+                {
+                    case "Shake": status.startAnimation(shake.animate("shake"));
+                        default:break;
+                }
+
 
                 //set the action to the temp variable
                 getCurrentAction = gameOptions[randomNum];
@@ -445,7 +459,6 @@ public class GameLogic extends AppCompatActivity implements GestureDetector.OnDo
             noHighScores.setLayoutParams(lParams);
             noHighScores.setTextSize(16);
             //add the content
-            noHighScores.setText("Got here");
             //add the view to the layout
             relativeLayout.addView(noHighScores);
             relativeLayout.addView(restart);

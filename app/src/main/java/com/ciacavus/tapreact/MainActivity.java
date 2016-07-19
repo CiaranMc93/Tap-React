@@ -102,7 +102,7 @@ public class MainActivity extends AppCompatActivity {
                 //animate
                 settings.startAnimation(wobble.animate("wobble"));
                 //warn the user
-                Toast.makeText(MainActivity.this,"Settings will be coming soon",Toast.LENGTH_LONG).show();
+                Toast.makeText(MainActivity.this,"Settings will be coming soon",Toast.LENGTH_SHORT).show();
                 //DISABLE SETTINGS FOR THE FIRST VERSION GO LIVE
                 //get the intent of the next application context
                 //Intent i = new Intent(getApplicationContext(), GameSettings.class);
@@ -130,10 +130,13 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 //animate
                 stats.startAnimation(wobble.animate("wobble"));
+                //warn the user
+                Toast.makeText(MainActivity.this,"Statistics will be coming soon",Toast.LENGTH_SHORT).show();
+                //DISABLE PERSONAL STATS FOR THE FIRST VERSION GO LIVE
                 //get the intent of the next application context
-                Intent i = new Intent(getApplicationContext(), PersonalStats.class);
+                //Intent i = new Intent(getApplicationContext(), PersonalStats.class);
                 //start the next activity which is defined in the intent
-                startActivity(i);
+                //startActivity(i);
             }
         });
 

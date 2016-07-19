@@ -14,6 +14,7 @@ public class Animate {
     Animation slideOut;
     Animation slideUp;
     Animation wobble;
+    Animation shake;
 
     public Animate(Context context)
     {
@@ -22,6 +23,7 @@ public class Animate {
         slideOut = AnimationUtils.loadAnimation(context, R.anim.slide_out);
         slideUp = AnimationUtils.loadAnimation(context, R.anim.slide_up);
         wobble = AnimationUtils.loadAnimation(context, R.anim.wobble_anim);
+        shake = AnimationUtils.loadAnimation(context,R.anim.shake_anim);
     }
 
     public Animation animate(String animationRequest)
@@ -31,6 +33,7 @@ public class Animate {
             case "slideIn":  return slideIn;
             case "slideUp": return slideUp;
             case "wobble": return wobble;
+            case "shake": return shake;
             default: return slideIn;
         }
     }
