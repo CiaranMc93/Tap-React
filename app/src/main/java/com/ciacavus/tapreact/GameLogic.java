@@ -460,8 +460,8 @@ public class GameLogic extends AppCompatActivity implements GestureDetector.OnDo
             noHighScores.setTextSize(16);
             //add the content
             //add the view to the layout
-            relativeLayout.addView(noHighScores);
-            relativeLayout.addView(restart);
+            gameLayout.addView(noHighScores);
+            gameLayout.addView(restart);
 
             //when pressed, restart the game
             restart.setOnClickListener(new View.OnClickListener() {
@@ -469,7 +469,7 @@ public class GameLogic extends AppCompatActivity implements GestureDetector.OnDo
                 public void onClick(View v) {
                     //restart the game
                     //remove the button so it is not added again
-                    relativeLayout.removeView(restart);
+                    gameLayout.removeView(restart);
                     restartGame();
                 }
             });

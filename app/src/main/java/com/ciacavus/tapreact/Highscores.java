@@ -21,13 +21,10 @@ public class Highscores extends AppCompatActivity {
 
     //create new DB variable
     DBAdapter db;
-
     //animation
     Animate animate;
-
     //get the layout of the screen
     LinearLayout li;
-    LinearLayout li2;
 
     @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
     @Override
@@ -96,19 +93,16 @@ public class Highscores extends AppCompatActivity {
         {
             //set the layout params of the text view
             ActionBar.LayoutParams lParams = new ActionBar.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            lParams.setMargins(25,8,8,25);
-            li2 = new LinearLayout(this);
-            li2.setLayoutParams(lParams);
             TextView highScores = new TextView(this);
             //set the layout params of the text view
             highScores.setLayoutParams(lParams);
-            highScores.setTextSize(16);
+            highScores.setTextSize(19);
             //add the content
-            highScores.setText("No." + count + "Name: " + c.getString(1) + " " + "Score: " + c.getString(2) + " " + "Success Counter: " + c.getString(3));
+            highScores.setText("No." + (count + 1) + "   Name: " + c.getString(1) + " " + "   Score: " + c.getString(2));
             //add the view to the layout
-            highScores.startAnimation(animate.animate("slideUp"));
-            li2.addView(highScores);
-            li.addView(li2);
+            highScores.startAnimation(animate.animate("slideIn"));
+            highScores.setPadding(30,30,30,30);
+            li.addView(highScores);
         }
     }
 }

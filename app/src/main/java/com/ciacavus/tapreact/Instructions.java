@@ -24,6 +24,9 @@ public class Instructions extends AppCompatActivity implements GestureDetector.O
 
     TextView instructText;
 
+    //animation
+    Animate animate;
+
     //create gesture variable/physical activites
     GestureDetectorCompat mDetector;
 
@@ -48,6 +51,9 @@ public class Instructions extends AppCompatActivity implements GestureDetector.O
         instructionsBox = (RelativeLayout) findViewById(R.id.instructionBox);
         instructList = (TextView) findViewById(R.id.list);
 
+        //create a new animation
+        animate = new Animate(this);
+
         setInstruction(instructionVar,instructionVar-1);
 
         Toast.makeText(Instructions.this,"Swipe left or right to get instructions",Toast.LENGTH_SHORT).show();
@@ -68,13 +74,13 @@ public class Instructions extends AppCompatActivity implements GestureDetector.O
 
         //set the layout params of the text view
         ActionBar.LayoutParams lParams = new ActionBar.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        lParams.setMargins(25,8,8,25);
         instructText = new TextView(this);
-        instructText.setText("");
         //set the layout params of the text view
         instructText.setLayoutParams(lParams);
-        instructText.setTextSize(20);
+        instructText.setTextSize(30);
+        instructText.setPadding(30,30,30,30);
         //add the content
+        instructText.startAnimation(animate.animate("slideIn"));
         instructText.setText(instructions[instruct]);
         //add the view to the layout
         instructionsBox.addView(instructText);
@@ -138,6 +144,7 @@ public class Instructions extends AppCompatActivity implements GestureDetector.O
             instructionVar++;
 
             //if the index is more than 5, change it back to 1
+            //make sure that there is no index out of bounds issue
             if(instructionVar > 6)
             {
                 instructionVar = 1;
@@ -152,6 +159,7 @@ public class Instructions extends AppCompatActivity implements GestureDetector.O
         {
             instructionVar--;
 
+            //make sure that there is no index out of bounds issue
             if(instructionVar < 1)
             {
                 instructionVar = 6;
