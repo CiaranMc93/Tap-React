@@ -41,11 +41,14 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_below="@+id/textView"
                 android:id="@+id/instructionBox"
                 android:layout_marginBottom="200dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
                 android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"></RelativeLayout>
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/list"
+                android:background="@drawable/layout_default_style"></RelativeLayout>
         </RelativeLayout>
     </LinearLayout>
 </LinearLayout>
